@@ -10,4 +10,8 @@ class Header extends Model
     use HasFactory;
 
     protected $fillable = ['image', 'text', 'button']; 
+
+    protected $casts = [
+        'button' => 'array',
+    ];    
 }

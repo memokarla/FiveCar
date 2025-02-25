@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('headers', function (Blueprint $table) {
             $table->id();
             $table->string('image');
-            $table->string('text');
-            $table->json('button');
+            $table->string('text')->nullable();
+            $table->json('button')->nullable();
             $table->timestamps();
         });
     }
