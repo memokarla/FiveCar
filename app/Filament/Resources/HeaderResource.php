@@ -35,16 +35,18 @@ class HeaderResource extends Resource
                         ->required(), // Wajib
 
                         Forms\Components\TextInput::make('text')
-                        ->label('Text Header')
-                        ->placeholder('Text'),
+                        ->label('Text Header') // Tulisan ini ada di atas form
+                        ->placeholder('Text'), // Tulisan ini ada di dalam form
 
+                        // keduanya dianggap sebagai array JSON dalam satu kolom database, bukan sebagai field individual
                         Forms\Components\Group::make([
-                            Forms\Components\TextInput::make('button.text')
+                            Forms\Components\TextInput::make('button.text') // Mengakses properti text dalam JSON
                                 ->label('Button Text'),
                         
-                            Forms\Components\Select::make('button.color')
+                            Forms\Components\Select::make('button.color') // Mengakses properti color dalam JSON
                                 ->label('Button Color (Bootstrap)')
                                 ->options([
+                                    // Sebagai kunci (key) dalam array => Sebagai nilai (value) yang ditampilkan di dropdown
                                     'primary' => 'Primary (Blue)',
                                     'secondary' => 'Secondary (Gray)',
                                     'success' => 'Success (Green)',
@@ -53,8 +55,9 @@ class HeaderResource extends Resource
                                     'info' => 'Info (Cyan)',
                                     'light' => 'Light (White)',
                                     'dark' => 'Dark (Black)',
-                                ]),
-                        ])
+                                ])
+                                ->requiredIf('button.text', fn ($get) => !empty($get('button.text')))
+                        ])  
                     ])
             ]);
     }
@@ -62,35 +65,47 @@ class HeaderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                
-            Tables\Columns\ImageColumn::make('image')
-                 ->label('Header Image'),
+            ->columns([ 
+                // id menjadi nomor urut berdasarkan id terkecil hingga terbesar
+                // ini sekadar di table filamentnya, pada database tetap sesuai dengan id yang tersimpan dan terhapus
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID') // Ini kayak fieldnya, untuk memudahkan pengguna mengidentifikasi data
+                    ->getStateUsing(fn ($record) => Header::orderBy('id')->pluck('id') 
+                    ->search($record->id) + 1), 
+                    
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Header Image'),
 
-            Tables\Columns\TextColumn::make('text')
-                ->label('Text Header')
-                ->searchable(),
+                Tables\Columns\TextColumn::make('text')
+                    ->label('Text Header')
+                    ->searchable(), // bisa di search oleh filamentnya
 
-            Tables\Columns\TextColumn::make('button.text')
-                ->label('Button Text')
-                ->sortable(),
+                Tables\Columns\TextColumn::make('button.text')
+                    ->label('Button Text')
+                    ->searchable(),
 
-            Tables\Columns\BadgeColumn::make('button.color')
-                ->label('Button Color')
-                ->colors([
-                    'primary' => 'blue',
-                    'secondary' => 'gray',
-                    'success' => 'green',
-                    'danger' => 'red',
-                    'warning' => 'yellow',
-                    'info' => 'cyan',
-                    'light' => 'white',
-                    'dark' => 'black',
-                ])
-                ->sortable(),
+                Tables\Columns\BadgeColumn::make('button.color')
+                    ->label('Button Color')
+                    ->colors([
+                        // nilai yang disimpan di database => teks yang ditampilkan di dropdown pada form (saat memilih warna)
+                        'primary' => 'primary',
+                        'secondary' => 'gray',
+                        'success' => 'success',
+                        'danger' => 'danger',
+                        'warning' => 'warning',
+                        'info' => 'info',
+                        'light' => 'gray',
+                        'dark' => 'dark',
+                    ])                    
+                    ->searchable(),
+
+                Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
+                    ->label('Status'), 
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
+                    ->trueLabel('Aktif') // Menampilkan hanya yang aktif
+                    ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
