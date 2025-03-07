@@ -9,5 +9,22 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'image', 'price', 'location', 'description', 'condition', 'jenis_id', 'merks_id']; 
+    protected $fillable = ['name', 'image', 'price', 'location', 'description', 'condition', 'jenis_id', 'merks_id'];
+    
+    // Relasi ke Merk
+    public function merk()
+    {
+        return $this->belongsTo(Merk::class, 'merk_id');
+    }
+
+    // Relasi ke Jenis
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class, 'jenis_id');
+    }
+
+    protected $casts = [
+        'description' => 'array',
+    ];
+    
 }

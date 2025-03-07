@@ -56,8 +56,14 @@ class HeaderResource extends Resource
                                     'light' => 'Light (White)',
                                     'dark' => 'Dark (Black)',
                                 ])
-                                ->requiredIf('button.text', fn ($get) => !empty($get('button.text')))
-                        ])  
+                                ->required(fn ($get) => !empty($get('button.text'))), // Wajib jika button text diisi
+                        ]),
+                        
+                        Forms\Components\TextInput::make('button_link')
+                            ->label('Link') 
+                            ->placeholder('Link for Button')
+                            ->url() // memastikan input berupa URL 
+                            ->required(fn ($get) => !empty($get('button.text'))),
                     ])
             ]);
     }

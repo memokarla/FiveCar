@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Header extends Model
 {
@@ -14,4 +15,15 @@ class Header extends Model
     protected $casts = [
         'button' => 'array',
     ];    
+
+    protected static function boot() 
+    {
+        parent::boot();
+
+        static::deleting(function ($header) {
+            if ($header->image) {
+                Storage::disk('public')->delete($header->image);
+            }
+        });
+    }
 }
