@@ -10,4 +10,9 @@ class Jenis extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'image'];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'jenis_id');
+    }
 }

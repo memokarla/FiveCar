@@ -30,7 +30,9 @@ class MerkResource extends Resource
                         //image
                         Forms\Components\FileUpload::make('image')
                             ->label('Image')
-                            ->required(),
+                            ->image() 
+                            ->directory('merk_image')
+                            ->required(), // Wajib
 
                         // name
                         Forms\Components\TextInput::make('name')

@@ -33,7 +33,9 @@ class ProductResource extends Resource
                     //image
                     Forms\Components\FileUpload::make('image')
                         ->label('Car Image')
-                        ->required(),
+                        ->image() 
+                        ->directory('car_image')
+                        ->required(), // Wajib
 
                     // grid
                     Forms\Components\Grid::make(2)
@@ -43,27 +45,29 @@ class ProductResource extends Resource
                         Forms\Components\Select::make('merks_id')
                             ->label('Car Brand') 
                             ->relationship('merk', 'name')
+                            ->native(false)
                             ->required(),
 
                         // milih jenis
                         Forms\Components\Select::make('jenis_id')
                             ->label('Car Categories')
                             ->relationship('jenis', 'name')
+                            ->native(false)
                             ->required(),
                     ]),
 
                     // name
                     Forms\Components\TextInput::make('name')
-                        ->label('Car Name') 
-                        ->placeholder('Categories') 
+                        ->label('Car Variant / Series') 
+                        ->placeholder('Varian or Series') 
                         ->required(),
                     
                     // price
                     Forms\Components\TextInput::make('price')
-                        ->label('Price')
+                        ->label('Price (Million)')
                         ->numeric()
                         ->prefix('Rp ')
-                        ->extraInputAttributes(['style' => 'text-align: right']) // Rata kanan agar lebih rapi
+                        ->extraInputAttributes(['style' => 'text-align: left']) // Rata kiri agar lebih rapi
                         ->suffix('.00') // Menampilkan default desimal
                         ->required(),
 
@@ -73,66 +77,103 @@ class ProductResource extends Resource
                         ->placeholder('City') 
                         ->required(),
 
+                    // condition
+                    Forms\Components\Select::make('condition')
+                        ->label('Condition')
+                        ->options([
+                            'baru' => 'New',
+                            'bekas' => 'Second',
+                        ])
+                        ->required()
+                        ->native(false), // Agar pakai dropdown custom Filament
+
                     // description
-                    Forms\Components\Section::make('Description') // Card dengan judul "Description"
+                    Forms\Components\Section::make('description')
                     ->schema([
-                        Forms\Components\Grid::make(2) // Grid 2 kolom
+                        Forms\Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\TextInput::make('Mesin')
+                                Forms\Components\TextInput::make('description.engine')
+                                    ->label('Engine')
                                     ->required(),
-                                Forms\Components\TextInput::make('Transmisi')
+                                Forms\Components\TextInput::make('description.transmission')
+                                    ->label('Transmission')
                                     ->required(),
-                                Forms\Components\TextInput::make('Tenaga')
+                                Forms\Components\TextInput::make('description.power')
+                                    ->label('Power')
                                     ->required(),
-                                Forms\Components\Select::make('Jenis Bahan Bakar')
+                                Forms\Components\Select::make('description.fuel_type')
+                                    ->label('Fuel Type')
                                     ->options([
                                         'bensin' => 'Bensin',
                                         'solar' => 'Solar',
                                         'listrik' => 'Listrik',
                                         'hybrid' => 'Hybrid',
                                     ])
+                                    ->native(false)
                                     ->required(),
-                                Forms\Components\TextInput::make('Konsumsi BBM')
-                                    ->label('Konsumsi BBM')
+                                Forms\Components\TextInput::make('description.fuel_consumption')
+                                    ->label('Fuel Consumption')
                                     ->required(),
-                                Forms\Components\TextInput::make('Kapasitas Tempat Duduk')
+                                Forms\Components\TextInput::make('description.seat_capacity')
+                                    ->label('Seat Capacity')
                                     ->numeric()
                                     ->required(),
-                                Forms\Components\TextInput::make('Lebar')
+                                Forms\Components\TextInput::make('description.width')
+                                    ->label('Width')
                                     ->numeric()
                                     ->required(),
-                                Forms\Components\TextInput::make('Panjang')
+                                Forms\Components\TextInput::make('description.length')
+                                    ->label('Length')
                                     ->numeric()
                                     ->required(),
-                                Forms\Components\TextInput::make('Tinggi')
+                                Forms\Components\TextInput::make('description.height')
+                                    ->label('Height')
                                     ->numeric()
                                     ->required(),
-                                Forms\Components\TextInput::make('Ground Clearance')
+                                Forms\Components\TextInput::make('description.ground_clearance')
+                                    ->label('Ground Clearance')
                                     ->required(),
                             ]),
-                    ])
-                    ->collapsible() // Menjadikan section bisa di-expand/collapse
-                    ->collapsed() // Defaultnya tertutup
-                    ->columnSpanFull(), // Memastikan card ini melebar penuh di form
-                    
-                    // condition
-                    Forms\Components\Select::make('condition')
-                        ->label('Kondisi')
-                        ->options([
-                            'baru' => 'Baru',
-                            'bekas' => 'Bekas',
                         ])
-                        ->required()
-                        ->native(false), // Agar pakai dropdown custom Filament
-                ])
-            ]);
+                        ->collapsible()
+                        ->collapsed()
+                        ->columnSpanFull(),                
+                                    
+            ])
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID') 
+                    ->getStateUsing(fn ($record) => Product::orderBy('id')->pluck('id') 
+                    ->search($record->id) + 1), 
+                
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Image')
+                    ->searchable(),
+                
+                // Brand - Categories - Variant
+                Tables\Columns\TextColumn::make('car_info')
+                    ->label('Car')
+                    ->getStateUsing(fn ($record) => "{$record->merk->name} - {$record->jenis->name}")
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Car Price')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('location')
+                    ->label('Location')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('condition')
+                    ->label('Condition')
+                    ->searchable(),
+                    
             ])
             ->filters([
                 //

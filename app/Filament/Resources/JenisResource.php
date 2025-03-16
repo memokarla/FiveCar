@@ -30,7 +30,9 @@ class JenisResource extends Resource
                         //image
                         Forms\Components\FileUpload::make('image')
                             ->label('Image')
-                            ->required(),
+                            ->image() 
+                            ->directory('jenis_image')
+                            ->required(), // Wajib
 
                         // name
                         Forms\Components\TextInput::make('name')
