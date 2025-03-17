@@ -31,7 +31,7 @@ class JenisResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Image')
                             ->image() 
-                            ->directory('jenis_image')
+                            ->directory('jenis_image') // Folder penyimpanan di storage/app/public/[jenis_image]
                             ->required(), // Wajib
 
                         // name

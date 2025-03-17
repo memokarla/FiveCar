@@ -31,7 +31,7 @@ class MerkResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Image')
                             ->image() 
-                            ->directory('merk_image')
+                            ->directory('merk_image') // Folder penyimpanan di storage/app/public/[merk_image]
                             ->required(), // Wajib
 
                         // name

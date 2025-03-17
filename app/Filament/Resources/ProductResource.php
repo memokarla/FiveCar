@@ -34,18 +34,18 @@ class ProductResource extends Resource
                     Forms\Components\FileUpload::make('image')
                         ->label('Car Image')
                         ->image() 
-                        ->directory('car_image')
+                        ->directory('car_image') // Folder penyimpanan di storage/app/public/[car_image]
                         ->required(), // Wajib
 
                     // grid
-                    Forms\Components\Grid::make(2)
+                    Forms\Components\Grid::make(2) // membuat grid layout dalam form, dalam konteks ini berarti membuat 2 kolom dalam satu baris
                     ->schema([
-
                         // milih merk
-                        Forms\Components\Select::make('merks_id')
+                        Forms\Components\Select::make('merks_id') // menghasilkan dorpdown untuk memilih data berdasarkan FK merks_id
                             ->label('Car Brand') 
-                            ->relationship('merk', 'name')
-                            ->native(false)
+                            ->relationship('merk', 'name') // mengambil field name dari tabel merk (jadi dropdownnya akan menampilkan field name)
+                                                           // dengan ini, model utama (product) harus memiliki relasi belongsTo ke model Merk
+                            ->native(false) // menonaktifkan tampilan dropdown bawaan browser, menggantinya dengan dropdown yang lebih interaktif dari Filament
                             ->required(),
 
                         // milih jenis
@@ -65,10 +65,10 @@ class ProductResource extends Resource
                     // price
                     Forms\Components\TextInput::make('price')
                         ->label('Price (Million)')
-                        ->numeric()
-                        ->prefix('Rp ')
-                        ->extraInputAttributes(['style' => 'text-align: left']) // Rata kiri agar lebih rapi
-                        ->suffix('.00') // Menampilkan default desimal
+                        ->numeric() // Hanya menerima angka
+                        ->prefix('Rp ') // Menambahkan "Rp " di depan input
+                        ->extraInputAttributes(['style' => 'text-align: left']) // Teks rata kiri
+                        ->suffix('.00') // Menambahkan ".00" di akhir input
                         ->required(),
 
                     // location
@@ -78,30 +78,30 @@ class ProductResource extends Resource
                         ->required(),
 
                     // condition
-                    Forms\Components\Select::make('condition')
+                    Forms\Components\Select::make('condition') // menghasilkan dorpdown untuk memilih data berdasarkan field condition
                         ->label('Condition')
-                        ->options([
+                        ->options([                 // membuat pilihan untuk dropdownnya
                             'baru' => 'New',
                             'bekas' => 'Second',
                         ])
-                        ->required()
-                        ->native(false), // Agar pakai dropdown custom Filament
+                        ->native(false) // menonaktifkan tampilan dropdown bawaan browser
+                        ->required(),
 
                     // description
-                    Forms\Components\Section::make('description')
+                    Forms\Components\Section::make('description') // membuat section description yang berisi beberapa input 
                     ->schema([
-                        Forms\Components\Grid::make(2)
+                        Forms\Components\Grid::make(2) // membuat 2 kolom dalam satu baris
                             ->schema([
                                 Forms\Components\TextInput::make('description.engine')
                                     ->label('Engine')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.transmission')
-                                    ->label('Transmission')
+                                    ->label('Transmission') 
                                     ->required(),
                                 Forms\Components\TextInput::make('description.power')
                                     ->label('Power')
                                     ->required(),
-                                Forms\Components\Select::make('description.fuel_type')
+                                Forms\Components\Select::make('description.fuel_type') // dropdown untuk memilih jenis bahan bakar
                                     ->label('Fuel Type')
                                     ->options([
                                         'bensin' => 'Bensin',
@@ -135,9 +135,9 @@ class ProductResource extends Resource
                                     ->required(),
                             ]),
                         ])
-                        ->collapsible()
-                        ->collapsed()
-                        ->columnSpanFull(),                
+                        ->collapsible() // Agar section bisa diklik untuk dibuka/tutup  
+                        ->collapsed() // Default dalam keadaan tertutup saat halaman dimuat  
+                        ->columnSpanFull(), // Memastikan section ini mengambil lebar penuh dalam grid form           
                                     
             ])
         ]);
@@ -147,8 +147,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                // id menjadi nomor urut berdasarkan id terkecil hingga terbesar
+                // ini sekadar di table filamentnya, pada database tetap sesuai dengan id yang tersimpan dan terhapus
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID') 
+                    ->label('ID') // Ini kayak fieldnya, untuk memudahkan pengguna mengidentifikasi data
                     ->getStateUsing(fn ($record) => Product::orderBy('id')->pluck('id') 
                     ->search($record->id) + 1), 
                 
@@ -156,10 +158,10 @@ class ProductResource extends Resource
                     ->label('Image')
                     ->searchable(),
                 
-                // Brand - Categories - Variant
-                Tables\Columns\TextColumn::make('car_info')
+                Tables\Columns\TextColumn::make('car_info') // membuat kolom baru dalam tabel Filament dengan nama "car_info"
                     ->label('Car')
-                    ->getStateUsing(fn ($record) => "{$record->merk->name} - {$record->jenis->name}")
+                    ->getStateUsing(fn ($record) => "{$record->merk->name} - {$record->jenis->name}") 
+                                    // untuk menampilkan data yang tidak ada di database secara langsung, tetapi berasal dari relasi
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('price')
