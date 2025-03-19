@@ -56,11 +56,24 @@ class ProductResource extends Resource
                             ->required(),
                     ]),
 
-                    // name
-                    Forms\Components\TextInput::make('name')
-                        ->label('Car Variant / Series') 
-                        ->placeholder('Varian or Series') 
-                        ->required(),
+                    // grid
+                    Forms\Components\Grid::make(2) 
+                    ->schema([
+                        // name
+                        Forms\Components\TextInput::make('name')
+                            ->label('Car Variant / Series') 
+                            ->placeholder('Varian or Series') 
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+  
+                        // slug
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
+                            ->required(),
+                    ]),
                     
                     // price
                     Forms\Components\TextInput::make('price')
@@ -162,6 +175,10 @@ class ProductResource extends Resource
                     ->label('Car')
                     ->getStateUsing(fn ($record) => "{$record->merk->name} - {$record->jenis->name}") 
                                     // untuk menampilkan data yang tidak ada di database secara langsung, tetapi berasal dari relasi
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('price')

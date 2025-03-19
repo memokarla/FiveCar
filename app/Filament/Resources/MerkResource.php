@@ -38,6 +38,14 @@ class MerkResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Brand') // Tulisan ini ada di atas form
                             ->placeholder('Brand') // Tulisan ini ada di dalam form
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+  
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                         
                     ])
@@ -59,6 +67,10 @@ class MerkResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Car Brand')
                     ->searchable(), // bisa di search oleh filamentnya
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
             ])
             ->filters([
                 //

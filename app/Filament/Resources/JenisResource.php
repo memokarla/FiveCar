@@ -38,6 +38,20 @@ class JenisResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Categories') // Tulisan ini ada di atas form
                             ->placeholder('Categories') // Tulisan ini ada di dalam form
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                              // afterStateUpdated -> callback yang dijalankan setelah nilai state pada field diperbarui oleh pengguna
+                              // function (callable $set, $state) -> $set: Fungsi callback yang digunakan untuk mengubah nilai field tertentu di form
+                              //                                  -> $state: Nilai baru yang dimasukkan oleh pengguna ke dalam field name
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                                // $set -> Digunakan untuk memperbarui nilai field slug
+                                // $state -> Nilai baru yang dimasukkan ke dalam field name oleh pengguna
+                                // \Illuminate\Support\Str::slug($state) -> Mengubah nilai name menjadi slug
+                            })
+                            ->required(),
+
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                         
                     ])
@@ -59,6 +73,10 @@ class JenisResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Car Category')
                     ->searchable(), // bisa di search oleh filamentnya
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
             ])
             ->filters([
                 //
