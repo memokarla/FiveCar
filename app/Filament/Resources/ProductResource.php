@@ -192,10 +192,22 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('condition')
                     ->label('Condition')
                     ->searchable(),
+
+                Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
+                    ->label('Is Active'), 
+
+                Tables\Columns\ToggleColumn::make('on_sale') 
+                    ->label('On Sale'),
                     
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
+                    ->trueLabel('Aktif') // Menampilkan hanya yang aktif
+                    ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
+                
+                Tables\Filters\TernaryFilter::make('on_sale') 
+                    ->trueLabel('Aktif') 
+                    ->falseLabel('Nonaktif'), 
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

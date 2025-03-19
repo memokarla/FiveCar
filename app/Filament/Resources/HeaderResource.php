@@ -106,7 +106,7 @@ class HeaderResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
-                    ->label('Status'), 
+                    ->label('Is Active'), 
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
