@@ -93,7 +93,7 @@ class OrderResource extends Resource
                         ->required(),
 
                         // grid
-                        Forms\Components\Grid::make(2) 
+                        Forms\Components\Grid::make(12) 
                         ->schema([
                             // shipping method
                             Forms\Components\Select::make('shipping_method')
@@ -105,8 +105,33 @@ class OrderResource extends Resource
                                     'roRoShipping' => 'Ro-Ro Shipping',
                                     'driverDelivery' => 'Driver Delivery',
                                 ])
+                                ->afterStateUpdated(function (\Filament\Forms\Set $set, $state) {
+                                    $taxRates = [
+                                        'pickupAtDealer' => 0,
+                                        'homeDelivery' => 5,
+                                        'carCarrier' => 7,
+                                        'roRoShipping' => 8,
+                                        'driverDelivery' => 6,
+                                    ];
+                                    
+                                    // Set nilai tax berdasarkan metode pengiriman yang dipilih
+                                    $set('tax', $taxRates[$state] ?? 0);
+                                })
+                                ->live() // Agar perubahan langsung diproses
                                 ->native(false)
+                                ->columnSpan(6)
                                 ->required(),
+
+                            // tax
+                            Forms\Components\TextInput::make('tax')
+                                ->label('Tax')
+                                ->numeric()
+                                ->disabled()
+                                ->suffix('%')
+                                ->columnSpan(2),
+
+                            Forms\Components\Hidden::make('tax')
+                                ->default(0),
                         ]),
 
                     ]), // tutup group Order Information
@@ -123,8 +148,9 @@ class OrderResource extends Resource
                             ->label('')
                             ->relationship('orderItems') // Sesuai dengan relasi di model Order
                             ->schema([
-                                Forms\Components\Grid::make(10) // Grid dengan 4 kolom
+                                Forms\Components\Grid::make(12) // Grid dengan 4 kolom
                                     ->schema([
+                                        // product
                                         Forms\Components\Select::make('product_id')
                                             ->label('Product')
                                             ->options(
@@ -145,6 +171,7 @@ class OrderResource extends Resource
                                             ->columnSpan(4)
                                             ->required(),
 
+                                        // qty
                                         Forms\Components\TextInput::make('quantity')
                                             ->label('Qty')
                                             ->numeric() 
@@ -157,19 +184,27 @@ class OrderResource extends Resource
                                             )
                                             ->required(),
 
+                                        // unit amount
                                         Forms\Components\TextInput::make('unit_amount')
                                             ->label('Unit Price')
                                             ->numeric()
                                             ->disabled()
                                             ->prefix('Rp')
-                                            ->columnSpan(2),
+                                            ->columnSpan(3),
+                                        
+                                        Forms\Components\Hidden::make('unit_amount')
+                                            ->default(0),
 
+                                        // total amount
                                         Forms\Components\TextInput::make('total_amount')
                                             ->label('Total Price')
                                             ->numeric()
                                             ->disabled()
                                             ->prefix('Rp')
-                                            ->columnSpan(2),
+                                            ->columnSpan(3),
+                                        
+                                        Forms\Components\Hidden::make('total_amount')
+                                            ->default(0),
                                     ]),
                             ]) // tutup repeater oder item
                             ->columns(1) // Agar setiap item dalam satu baris
@@ -181,18 +216,26 @@ class OrderResource extends Resource
                             Forms\Components\Placeholder::make('grand_total')
                             ->label('Grand Total')
                             ->content(function (\Filament\Forms\Get $get, \Filament\Forms\Set $set) {
-                                $total = 0;
+                                $subtotal = 0;
 
-                                if (!$repeaters = $get('orderItems')) {
-                                    return 'Rp ' . number_format($total, 2);
+                                // Menghitung subtotal dari orderItems
+                                if ($orderItems = $get('orderItems')) {
+                                    foreach ($orderItems as $key => $item) {
+                                        $subtotal += $get("orderItems.{$key}.total_amount") ?? 0;
+                                    }
                                 }
 
-                                foreach ($repeaters as $key => $repeater) {
-                                    $total += $get("orderItems.{$key}.total_amount");
-                                }
+                                // Mendapatkan tax dari input 'tax'
+                                $tax = $get('tax') ?? 0;
+                                $taxAmount = ($subtotal * $tax) / 100;
 
-                                $set('grand_total', $total);
-                                return 'Rp ' . number_format($total, 2);
+                                // Menghitung Grand Total
+                                $grandTotal = $subtotal + $taxAmount;
+
+                                // Menyimpan hasil ke state 'grand_total'
+                                $set('grand_total', $grandTotal);
+
+                                return 'Rp ' . number_format($grandTotal, 2);
                             }),
 
                             Forms\Components\Hidden::make('grand_total')
@@ -204,9 +247,10 @@ class OrderResource extends Resource
 
                 Forms\Components\Card::make()
                 ->schema([
-
+                
                     // address
                     Forms\Components\Section::make('Address') // membuat section address yang berisi beberapa input 
+                    ->relationship('address')
                     ->schema([
 
                         // grid
@@ -224,34 +268,26 @@ class OrderResource extends Resource
                                 ->prefix('+62 ')
                                 ->numeric() 
                                 ->required(),
-                        ]),
-
-                        // grid
-                        Forms\Components\Grid::make(2) 
-                        ->schema([
-                            // name
+                                
+                            // street address
                             Forms\Components\TextInput::make('street_address')
                                 ->label('Street Address') 
                                 ->placeholder('Street Address') 
                                 ->required(),
 
-                            // phone
+                            // city
                             Forms\Components\TextInput::make('city')
                                 ->label('City')
                                 ->placeholder('City')
                                 ->required(),
-                        ]),
-
-                        // grid
-                        Forms\Components\Grid::make(2) 
-                        ->schema([
-                            // name
+                                
+                            // state
                             Forms\Components\TextInput::make('state')
                                 ->label('State') 
                                 ->placeholder('State') 
                                 ->required(),
 
-                            // phone
+                            // zip code
                             Forms\Components\TextInput::make('zip_code')
                                 ->label('Zip Code')
                                 ->placeholder('Zip Code')
@@ -262,7 +298,6 @@ class OrderResource extends Resource
                     ]), // tutup group Address
 
                 ]), // tutup Address
-
             ]);
     }
 
@@ -270,18 +305,79 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                //
+                // id
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID') // Ini kayak fieldnya, untuk memudahkan pengguna mengidentifikasi data
+                    ->getStateUsing(fn ($record) => Order::orderBy('id')->pluck('id') 
+                    ->search($record->id) + 1), 
+
+                // user
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User')
+                    ->getStateUsing(fn ($record) => $record->user?->name) // Mengambil nama dari relasi user
+                    ->searchable(),
+
+                // grand total
+                Tables\Columns\TextColumn::make('grand_total')
+                    ->label('Grand Total')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state))
+                    ->searchable(),
+
+                // payment method
+                Tables\Columns\TextColumn::make('payment_method')
+                    ->label('Payment Method')
+                    ->formatStateUsing(fn ($state) => [
+                        'cod' => 'Cash on Delivery',
+                        'stripe' => 'Stripe',
+                    ][$state] ?? $state)
+                    ->searchable(),
+
+                // payment status
+                Tables\Columns\TextColumn::make('payment_status')
+                    ->label('Payment Status')
+                    ->formatStateUsing(fn ($state) => [
+                        'pending' => 'Pending',
+                        'paid' => 'Paid',
+                        'failed' => 'Failed',
+                    ][$state] ?? $state)
+                    ->searchable(),
+
+                // status
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->formatStateUsing(fn ($state) => [
+                        'new' => 'New',
+                        'processing' => 'Processing',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'canceled' => 'Cancelled',
+                    ][$state] ?? $state)
+                    ->searchable(),
+
+                // shipping method
+                Tables\Columns\TextColumn::make('shipping_method')
+                    ->label('Shipping Method')
+                    ->formatStateUsing(fn ($state) => [
+                        'pickupAtDealer' => 'Pickup at Dealer',
+                        'homeDelivery' => 'Home Delivery',
+                        'carCarrier' => 'Car Carrier',
+                        'roRoShipping' => 'Ro-Ro Shipping',
+                        'driverDelivery' => 'Driver Delivery',
+                    ][$state] ?? $state)
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
     }
 
@@ -292,11 +388,20 @@ class OrderResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string {
+        return static::getModel()::count();
+    }
+    
+    public static function getNavigationBadgeColor(): string|array|null {
+        return static::getModel()::count() > 10 ? 'danger' : 'success';
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
+            'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }

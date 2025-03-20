@@ -9,12 +9,12 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['grand_total', 'payment_method', 'payment_status', 'status', 'shipping_amount', 'shipping_method', 'user_id'];
+    protected $fillable = ['grand_total', 'payment_method', 'payment_status', 'tax', 'status', 'shipping_method', 'user_id'];
     
     // Relasi ke User
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     // Relasi ke Order Item
@@ -23,5 +23,10 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    
+    // Relasi ke Address
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
 }

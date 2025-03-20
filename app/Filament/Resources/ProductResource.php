@@ -183,6 +183,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('price')
                     ->label('Car Price')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state))
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('location')
@@ -210,12 +211,16 @@ class ProductResource extends Resource
                     ->falseLabel('Nonaktif'), 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
