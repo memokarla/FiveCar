@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('grand_total', 10, 2);
             $table->string('payment_method');
             $table->string('payment_status');
+            $table->decimal('tax', 10, 2); 
             $table->enum('status', ['new', 'processing', 'shipped', 'delivered', 'canceled'])->default('new');
             $table->decimal('shipping_amount', 10, 2);
             $table->string('shipping_method');

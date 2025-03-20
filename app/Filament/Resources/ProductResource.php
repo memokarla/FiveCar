@@ -101,7 +101,7 @@ class ProductResource extends Resource
                         ->required(),
 
                     // description
-                    Forms\Components\Section::make('description') // membuat section description yang berisi beberapa input 
+                    Forms\Components\Section::make('Description') // membuat section description yang berisi beberapa input 
                     ->schema([
                         Forms\Components\Grid::make(2) // membuat 2 kolom dalam satu baris
                             ->schema([

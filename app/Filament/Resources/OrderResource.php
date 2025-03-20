@@ -64,30 +64,37 @@ class OrderResource extends Resource
                                 ->required(),
                         ]),
 
+                        // status
+                        Forms\Components\ToggleButtons::make('status')
+                        ->label('Status')
+                        ->options([
+                            'new' => 'New',
+                            'processing' => 'Processing',
+                            'shipped' => 'Shipped',
+                            'delivered' => 'Delivered',
+                            'canceled' => 'Cancelled',
+                        ])
+                        ->colors([
+                            'new' => 'info', // Biru
+                            'processing' => 'primary', // Kuning
+                            'shipped' => 'info', // Biru
+                            'delivered' => 'success', // Hijau
+                            'canceled' => 'danger', // Merah
+                        ])
+                        ->icons([
+                            'new' => 'heroicon-m-sparkles',
+                            'processing' => 'heroicon-m-arrow-path',
+                            'shipped' => 'heroicon-m-truck',
+                            'delivered' => 'heroicon-m-check-badge',
+                            'canceled' => 'heroicon-m-x-circle',
+                        ])
+                        ->inline() // Menampilkan tombol dalam satu baris
+                        ->live()
+                        ->required(),
+
                         // grid
                         Forms\Components\Grid::make(2) 
                         ->schema([
-                            // status
-                            Forms\Components\ToggleButtons::make('status')
-                                ->label('Status')
-                                ->options([
-                                    'new' => 'New',
-                                    'processing' => 'Processing',
-                                    'shipped' => 'Shipped',
-                                    'delivered' => 'Delivered',
-                                    'canceled' => 'Cancelled',
-                                ])
-                                ->colors([
-                                    'new' => 'info', // Biru
-                                    'processing' => 'primary', // Kuning
-                                    'shipped' => 'info', // Biru
-                                    'delivered' => 'success', // Hijau
-                                    'canceled' => 'danger', // Merah
-                                ])
-                                ->inline() // Menampilkan tombol dalam satu baris
-                                ->live()
-                                ->required(),
-
                             // shipping method
                             Forms\Components\Select::make('shipping_method')
                                 ->label('Shipping Method')
@@ -112,61 +119,85 @@ class OrderResource extends Resource
                     // order item
                     Forms\Components\Section::make('Order Item') // membuat section order information yang berisi beberapa input 
                     ->schema([
-                    Forms\Components\Repeater::make('orderItems')
-                        ->label('')
-                        ->relationship('orderItems') // Sesuai dengan relasi di model Order
-                        ->schema([
-                            Forms\Components\Grid::make(10) // Grid dengan 4 kolom
-                                ->schema([
-                                    Forms\Components\Select::make('product_id')
-                                        ->label('Product')
-                                        ->options(
-                                            \App\Models\Product::with(['merk', 'jenis']) // Pastikan relasi dimuat
-                                                ->get()
-                                                ->mapWithKeys(fn ($product) => [
-                                                    $product->id => "{$product->merk->name} {$product->jenis->name} {$product->name}"
-                                                ])
-                                        )
-                                        ->live()
-                                        ->afterStateUpdated(fn ($state, callable $set) => 
-                                            $set('unit_amount', \App\Models\Product::find($state)?->price ?? 0)
-                                        )
-                                        ->afterStateUpdated(fn ($state, callable $set) => 
-                                            $set('total_amount', \App\Models\Product::find($state)?->price ?? 0)
-                                        )
-                                        ->native(false)
-                                        ->columnSpan(4)
-                                        ->required(),
+                        Forms\Components\Repeater::make('orderItems')
+                            ->label('')
+                            ->relationship('orderItems') // Sesuai dengan relasi di model Order
+                            ->schema([
+                                Forms\Components\Grid::make(10) // Grid dengan 4 kolom
+                                    ->schema([
+                                        Forms\Components\Select::make('product_id')
+                                            ->label('Product')
+                                            ->options(
+                                                \App\Models\Product::with(['merk', 'jenis']) // Pastikan relasi dimuat
+                                                    ->get()
+                                                    ->mapWithKeys(fn ($product) => [
+                                                        $product->id => "{$product->merk->name} {$product->jenis->name} {$product->name}"
+                                                    ])
+                                            )
+                                            ->live()
+                                            ->afterStateUpdated(fn ($state, callable $set) => 
+                                                $set('unit_amount', \App\Models\Product::find($state)?->price ?? 0)
+                                            )
+                                            ->afterStateUpdated(fn ($state, callable $set) => 
+                                                $set('total_amount', \App\Models\Product::find($state)?->price ?? 0)
+                                            )
+                                            ->native(false)
+                                            ->columnSpan(4)
+                                            ->required(),
 
-                                    Forms\Components\TextInput::make('quantity')
-                                        ->label('Qty')
-                                        ->numeric() 
-                                        ->default(1)
-                                        ->minValue(1)
-                                        ->columnSpan(2)
-                                        ->reactive()
-                                        ->afterStateUpdated(fn ($state, callable $set, callable $get) => 
-                                            $set('total_amount', $state * $get('unit_amount'))
-                                        )
-                                        ->required(),
+                                        Forms\Components\TextInput::make('quantity')
+                                            ->label('Qty')
+                                            ->numeric() 
+                                            ->default(1)
+                                            ->minValue(1)
+                                            ->columnSpan(2)
+                                            ->reactive()
+                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => 
+                                                $set('total_amount', $state * $get('unit_amount'))
+                                            )
+                                            ->required(),
 
-                                    Forms\Components\TextInput::make('unit_amount')
-                                        ->label('Unit Price')
-                                        ->numeric()
-                                        ->disabled()
-                                        ->columnSpan(2),
+                                        Forms\Components\TextInput::make('unit_amount')
+                                            ->label('Unit Price')
+                                            ->numeric()
+                                            ->disabled()
+                                            ->prefix('Rp')
+                                            ->columnSpan(2),
 
-                                    Forms\Components\TextInput::make('total_amount')
-                                        ->label('Total Price')
-                                        ->numeric()
-                                        ->disabled()
-                                        ->columnSpan(2),
-                                ]),
-                        ])
-                        ->columns(1) // Agar setiap item dalam satu baris
-                        ->defaultItems(1) // Minimal 1 item
-                        ->addActionLabel('Add Product') // Label tombol tambah
-                        ->inlineLabel(false), // Agar tidak bertumpuk
+                                        Forms\Components\TextInput::make('total_amount')
+                                            ->label('Total Price')
+                                            ->numeric()
+                                            ->disabled()
+                                            ->prefix('Rp')
+                                            ->columnSpan(2),
+                                    ]),
+                            ]) // tutup repeater oder item
+                            ->columns(1) // Agar setiap item dalam satu baris
+                            ->defaultItems(1) // Minimal 1 item
+                            ->addActionLabel('Add Product') // Label tombol tambah
+                            ->inlineLabel(false), // Agar tidak bertumpuk
+
+                            // grand total
+                            Forms\Components\Placeholder::make('grand_total')
+                            ->label('Grand Total')
+                            ->content(function (\Filament\Forms\Get $get, \Filament\Forms\Set $set) {
+                                $total = 0;
+
+                                if (!$repeaters = $get('orderItems')) {
+                                    return 'Rp ' . number_format($total, 2);
+                                }
+
+                                foreach ($repeaters as $key => $repeater) {
+                                    $total += $get("orderItems.{$key}.total_amount");
+                                }
+
+                                $set('grand_total', $total);
+                                return 'Rp ' . number_format($total, 2);
+                            }),
+
+                            Forms\Components\Hidden::make('grand_total')
+                            ->default(0),
+
                     ]) // tutup group Order Item
 
                 ]), // tutup Order Item
