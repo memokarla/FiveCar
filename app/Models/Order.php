@@ -18,7 +18,7 @@ class Order extends Model
     }
 
     // Relasi ke Order Item
-    public function orderItems()
+    public function orderItems() 
     {
         return $this->hasMany(OrderItem::class);
     }

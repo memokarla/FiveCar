@@ -17,7 +17,7 @@ class JenisResource extends Resource
 {
     protected static ?string $model = Jenis::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
 
     public static function form(Form $form): Form
     {
@@ -40,11 +40,11 @@ class JenisResource extends Resource
                             ->placeholder('Categories') // Tulisan ini ada di dalam form
                             ->afterStateUpdated(function (callable $set, $state) {  
                               // afterStateUpdated -> callback yang dijalankan setelah nilai state pada field diperbarui oleh pengguna
-                              // function (callable $set, $state) -> $set: Fungsi callback yang digunakan untuk mengubah nilai field tertentu di form
-                              //                                  -> $state: Nilai baru yang dimasukkan oleh pengguna ke dalam field name
+                              // function (callable $set, $state) 
+                              // -> $set (setter): mengubah atau mengisi field lain (dala konteks ini adalah 'slug') dalam form berdasarkan input name (ini tegantung $set yang diatur) 
+                              // -> $state: nilai terkini dari input field (misal aku isi field name dengan "Sedan", maka maka $state akan berisi "Sedan")
                                 $set('slug', \Illuminate\Support\Str::slug($state));
-                                // $set -> Digunakan untuk memperbarui nilai field slug
-                                // $state -> Nilai baru yang dimasukkan ke dalam field name oleh pengguna
+                                // set inilah yang menjadi acuan nilai pada $state hendak diapakan
                                 // \Illuminate\Support\Str::slug($state) -> Mengubah nilai name menjadi slug
                             })
                             ->required(),
