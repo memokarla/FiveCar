@@ -17,7 +17,19 @@ class HeaderResource extends Resource
 {
     protected static ?string $model = Header::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
+
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Slider'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 1; 
+    }
 
     public static function form(Form $form): Form
     {
@@ -106,7 +118,7 @@ class HeaderResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
-                    ->label('Status'), 
+                    ->label('Is Active'), 
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
@@ -114,12 +126,14 @@ class HeaderResource extends Resource
                     ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
     }
 

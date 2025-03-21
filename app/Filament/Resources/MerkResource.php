@@ -17,7 +17,19 @@ class MerkResource extends Resource
 {
     protected static ?string $model = Merk::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Brand'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
 
     public static function form(Form $form): Form
     {
@@ -38,6 +50,14 @@ class MerkResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Brand') // Tulisan ini ada di atas form
                             ->placeholder('Brand') // Tulisan ini ada di dalam form
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+  
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                         
                     ])
@@ -59,17 +79,23 @@ class MerkResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Car Brand')
                     ->searchable(), // bisa di search oleh filamentnya
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
     }
 

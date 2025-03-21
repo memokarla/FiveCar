@@ -21,7 +21,13 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 4; 
+    }
 
     public static function form(Form $form): Form
     {
@@ -56,11 +62,24 @@ class ProductResource extends Resource
                             ->required(),
                     ]),
 
-                    // name
-                    Forms\Components\TextInput::make('name')
-                        ->label('Car Variant / Series') 
-                        ->placeholder('Varian or Series') 
-                        ->required(),
+                    // grid
+                    Forms\Components\Grid::make(2) 
+                    ->schema([
+                        // name
+                        Forms\Components\TextInput::make('name')
+                            ->label('Car Variant / Series') 
+                            ->placeholder('Varian or Series') 
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+  
+                        // slug
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
+                            ->required(),
+                    ]),
                     
                     // price
                     Forms\Components\TextInput::make('price')
@@ -88,7 +107,7 @@ class ProductResource extends Resource
                         ->required(),
 
                     // description
-                    Forms\Components\Section::make('description') // membuat section description yang berisi beberapa input 
+                    Forms\Components\Section::make('Description') // membuat section description yang berisi beberapa input 
                     ->schema([
                         Forms\Components\Grid::make(2) // membuat 2 kolom dalam satu baris
                             ->schema([
@@ -164,8 +183,13 @@ class ProductResource extends Resource
                                     // untuk menampilkan data yang tidak ada di database secara langsung, tetapi berasal dari relasi
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('price')
                     ->label('Car Price')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state))
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('location')
@@ -175,18 +199,34 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('condition')
                     ->label('Condition')
                     ->searchable(),
+
+                Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
+                    ->label('Is Active'), 
+
+                Tables\Columns\ToggleColumn::make('on_sale') 
+                    ->label('On Sale'),
                     
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
+                    ->trueLabel('Aktif') // Menampilkan hanya yang aktif
+                    ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
+                
+                Tables\Filters\TernaryFilter::make('on_sale') 
+                    ->trueLabel('Aktif') 
+                    ->falseLabel('Nonaktif'), 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

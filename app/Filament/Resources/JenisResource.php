@@ -17,7 +17,19 @@ class JenisResource extends Resource
 {
     protected static ?string $model = Jenis::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Category'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 2; 
+    }
 
     public static function form(Form $form): Form
     {
@@ -38,6 +50,20 @@ class JenisResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Categories') // Tulisan ini ada di atas form
                             ->placeholder('Categories') // Tulisan ini ada di dalam form
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                              // afterStateUpdated -> callback yang dijalankan setelah nilai state pada field diperbarui oleh pengguna
+                              // function (callable $set, $state) 
+                              // -> $set (setter): mengubah atau mengisi field lain (dala konteks ini adalah 'slug') dalam form berdasarkan input name (ini tegantung $set yang diatur) 
+                              // -> $state: nilai terkini dari input field (misal aku isi field name dengan "Sedan", maka maka $state akan berisi "Sedan")
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                                // set inilah yang menjadi acuan nilai pada $state hendak diapakan
+                                // \Illuminate\Support\Str::slug($state) -> Mengubah nilai name menjadi slug
+                            })
+                            ->required(),
+
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                         
                     ])
@@ -59,17 +85,23 @@ class JenisResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Car Category')
                     ->searchable(), // bisa di search oleh filamentnya
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
     }
 

@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('image');
             $table->decimal('price', 10, 2);
             $table->string('location');
             $table->json('description');
             $table->enum('condition', ['baru', 'bekas']);
+            $table->boolean('is_active')->default(true);
+            $table->boolean('on_sale')->default(false);
             $table->foreignId('jenis_id')->constrained('jenis')->onDelete('cascade');
             $table->foreignId('merks_id')->constrained('merks')->onDelete('cascade');
             $table->timestamps();
