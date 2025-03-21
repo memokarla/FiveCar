@@ -19,6 +19,18 @@ class JenisResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
 
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Category'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 2; 
+    }
+
     public static function form(Form $form): Form
     {
         return $form

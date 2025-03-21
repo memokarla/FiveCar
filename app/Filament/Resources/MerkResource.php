@@ -19,6 +19,18 @@ class MerkResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Brand'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
