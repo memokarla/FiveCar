@@ -383,15 +383,15 @@ class OrderResource extends Resource
                     ->searchable(),
 
                 // status
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(fn ($state) => [
+                    ->options([
                         'new' => 'New',
                         'processing' => 'Processing',
                         'shipped' => 'Shipped',
                         'delivered' => 'Delivered',
                         'canceled' => 'Cancelled',
-                    ][$state] ?? $state)
+                    ])
                     ->searchable(),
 
                 // shipping method
