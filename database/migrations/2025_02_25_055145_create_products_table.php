@@ -16,14 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('image');
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 15, 2);
             $table->string('location');
             $table->json('description');
             $table->enum('condition', ['baru', 'bekas']);
             $table->boolean('is_active')->default(true);
             $table->boolean('on_sale')->default(false);
-            $table->foreignId('jenis_id')->constrained('jenis')->onDelete('cascade');
-            $table->foreignId('merks_id')->constrained('merks')->onDelete('cascade');
+            $table->foreignId('jenis_id')->constrained('jenis')->onDelete('restrict');
+            $table->foreignId('merks_id')->constrained('merks')->onDelete('restrict');
             $table->timestamps();
         });
     }

@@ -25,6 +25,12 @@ class Product extends Model
     {
         return $this->belongsTo(Jenis::class, 'jenis_id');
     }
+
+    // Relasi ke Order Items
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
     
     protected $casts = [
         'description' => 'array',

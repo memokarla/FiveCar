@@ -90,13 +90,39 @@ class MerkResource extends Resource
             ->actions([
                 \Filament\Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteMerk($record)), // Ketika tombol hapus diklik dan dikonfirmasi, fungsi deleteMerk($record) akan dijalankan
                     Tables\Actions\ViewAction::make(),
                 ]),
             ])
             ->bulkActions([
                 // 
             ]);
+    }
+
+    protected static function deleteMerk($record) // fungsi inilah yang dijalankan ketika tombol hapus diklik
+    {
+        if ($record->products()->exists()) { // memeriksa apakah merk ini masih digunakan dalam produk sebelum dihapus
+        // $record->products() → Mengambil relasi produk yang terkait dengan merk tersebut (berdasarkan hasMany di model Merk).
+        // ->exists() → Mengecek apakah ada produk yang masih menggunakan merk ini.
+        // Jika ada produk yang menggunakan merk ini, penghapusan dibatalkan, dan muncul notifikasi error. 
+            \Filament\Notifications\Notification::make() // membuatkan notifikasi
+                ->title('Gagal menghapus!')
+                ->body('Merk ini masih digunakan dalam produk. Hapus produk terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        // Jika merk tidak digunakan dalam produk, maka data akan dihapus
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('Merk dihapus!')
+            ->body('Merk berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     public static function getRelations(): array

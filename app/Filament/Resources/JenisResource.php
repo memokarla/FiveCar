@@ -96,13 +96,35 @@ class JenisResource extends Resource
             ->actions([
                 \Filament\Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteJenis($record)), 
                     Tables\Actions\ViewAction::make(),
                 ]),
             ])
             ->bulkActions([
                 // 
             ]);
+    }
+
+    protected static function deleteJenis($record) 
+    {
+        if ($record->products()->exists()) {
+            \Filament\Notifications\Notification::make() 
+                ->title('Gagal menghapus!')
+                ->body('Jenis ini masih digunakan dalam produk. Hapus produk terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('Jenis dihapus!')
+            ->body('Jenis berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     public static function getRelations(): array

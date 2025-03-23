@@ -146,8 +146,9 @@ class OrderResource extends Resource
                                 ->default(0),
                         ]),
 
-                    ]), // tutup group Order Information
-
+                    ]) // tutup group Order Information
+                    ->collapsible() // Agar section bisa diklik untuk dibuka/tutup  
+                
                 ]), // tutup Order Information
 
                 Forms\Components\Card::make() // membuat kartu untuk Order Item
@@ -278,6 +279,7 @@ class OrderResource extends Resource
                             ->default(0),
 
                     ]) // tutup group Order Item
+                    ->collapsible(), // Agar section bisa diklik untuk dibuka/tutup  
 
                 ]), // tutup Order Item
 
@@ -331,7 +333,8 @@ class OrderResource extends Resource
                                 ->required(),
                         ]),
 
-                    ]), // tutup group Address
+                    ]) // tutup group Address
+                    ->collapsible(), // Agar section bisa diklik untuk dibuka/tutup  
 
                 ]), // tutup Address
             ]);

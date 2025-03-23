@@ -224,7 +224,8 @@ class ProductResource extends Resource
             ->actions([
                 \Filament\Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteProduct($record)), 
                     Tables\Actions\ViewAction::make(),
                 ]),
             ])
@@ -233,6 +234,27 @@ class ProductResource extends Resource
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
+    }
+
+    protected static function deleteProduct($record) 
+    {
+        if ($record->orderItems()->exists()) {
+            \Filament\Notifications\Notification::make() 
+                ->title('Gagal menghapus!')
+                ->body('Produk ini masih digunakan dalam order item. Hapus order item terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('Produk dihapus!')
+            ->body('Produk berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     public static function getRelations(): array

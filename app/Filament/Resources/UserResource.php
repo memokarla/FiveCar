@@ -104,7 +104,8 @@ class UserResource extends Resource
             ->actions([
                 \Filament\Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteUser($record)), 
                     Tables\Actions\ViewAction::make(),
                 ]),
             ])
@@ -113,6 +114,27 @@ class UserResource extends Resource
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
+    }
+
+    protected static function deleteUser($record) 
+    {
+        if ($record->orders()->exists()) {
+            \Filament\Notifications\Notification::make() 
+                ->title('Gagal menghapus!')
+                ->body('User ini masih digunakan dalam order. Hapus order terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('User dihapus!')
+            ->body('User berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     // mengembalikan daftar Relation Managers 
