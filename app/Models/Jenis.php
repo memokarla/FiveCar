@@ -29,5 +29,10 @@ class Jenis extends Model
                 // Fungsi Str::slug() mengubah nilai name menjadi format slug 
             }
         });
+
+        // setiap kali model diperbarui, slug selalu diperbarui sesuai name, tanpa pengecekan slug sebelumnya.
+        static::updating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
     }
 }

@@ -355,8 +355,12 @@ class OrderResource extends Resource
 
                 // grand total
                 Tables\Columns\TextColumn::make('grand_total')
-                    ->label('Grand Total')
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state)) // mengatur formatnya agar ada Rp 
+                    ->label('Car Price')
+                    ->formatStateUsing(fn ($state) =>  // state itu nilanya ya
+                        $state >= 1000000000  // nah, ini seperti "Jika nilai lebih atau sama dengan 1.000.000.000", maka
+                            ? 'Rp ' . number_format($state / 1000000000, 2) . ' M' // jika harga ≥ 1 miliar (1.000.000.000), maka tampilkan dalam satuan miliar (M)
+                            : 'Rp ' . number_format($state / 1000000, 2) . ' Jt' // jika < 1 miliar, maka tampilkan dalam satuan juta (Jt)
+                    )
                     ->searchable(),
 
                 // payment method

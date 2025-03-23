@@ -4,8 +4,8 @@ namespace App\Filament\Widgets;
 
 use App\Models\User;    
 use App\Models\Order;   
-use Filament\Widgets\StatsOverviewWidget\Stat; //digunakan untuk membuat kartu statistik dalam widget
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat; //digunakan untuk membuat kartu statistik dalam widget
 
 class OrderOverview extends BaseWidget
 {

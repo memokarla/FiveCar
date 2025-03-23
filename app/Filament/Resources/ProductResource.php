@@ -81,15 +81,15 @@ class ProductResource extends Resource
                             ->required(),
                     ]),
                     
-                    // price
+                    //  price
                     Forms\Components\TextInput::make('price')
-                        ->label('Price (Million)')
+                        ->label('Price (Million/Billion)')
                         ->numeric() // Hanya menerima angka
                         ->prefix('Rp ') // Menambahkan "Rp " di depan input
-                        ->extraInputAttributes(['style' => 'text-align: left']) // Teks rata kiri
+                        ->placeholder('Example: 1000000 for 1 Jt') // Memberi petunjuk input
                         ->suffix('.00') // Menambahkan ".00" di akhir input
                         ->required(),
-
+                
                     // location
                     Forms\Components\TextInput::make('location')
                         ->label('Location') 
@@ -189,8 +189,13 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('price')
                     ->label('Car Price')
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state))
+                    ->formatStateUsing(fn ($state) =>  // state itu nilanya ya
+                        $state >= 1000000000  // nah, ini seperti "Jika nilai lebih atau sama dengan 1.000.000.000", maka
+                            ? 'Rp ' . number_format($state / 1000000000, 2) . ' M' // jika harga ≥ 1 miliar (1.000.000.000), maka tampilkan dalam satuan miliar (M)
+                            : 'Rp ' . number_format($state / 1000000, 2) . ' Jt' // jika < 1 miliar, maka tampilkan dalam satuan juta (Jt)
+                    )
                     ->searchable(),
+                
 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
