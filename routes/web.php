@@ -3,12 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 
-// Route::get('/', App\Livewire\Home\Index::class)->name('home');
-
 Route::get('/', function () {
     return view('home'); 
 })->name('home');
 
+// Route::get('/', App\Livewire\Home\Index::class)->name('home');
 
 // Route::get('/', function () {
 //     return view('welcome');

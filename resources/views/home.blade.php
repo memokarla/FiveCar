@@ -1,6 +1,6 @@
-@extends('layouts.app') <!-- path yang menyimpan template navbar dan footer --> 
+@extends('navbar') <!-- path yang menyimpan template navbar --> 
 
-@section('content') <!-- berdasarkan _@yield('content') pada app.blade.php -->
+@section('content') <!-- berdasarkan yield('content') pada extends di atas -->
     @livewire('home.index') <!-- Menampilkan komponen Livewire Home -->
 @endsection
 
