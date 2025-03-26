@@ -21,7 +21,7 @@
             <!-- Styles -->
             @livewireStyles
         </head>
-        <body class="font-sans antialiased">
+        <body class="font-sans ">
             <x-banner />
 
             <div class="min-h-screen bg-gray-100">
@@ -42,9 +42,9 @@
                 </main> --}}
 
                 <x-navbar />
-                    <main>
-                        @yield('content')
-                    </main>
+                <main>
+                    @yield('content')
+                </main>
                 {{-- <x-footer /> --}}
 
             </div>
