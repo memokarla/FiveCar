@@ -20,10 +20,11 @@
         @endif
     </head>
     {{-- <body class="bg-[#800000] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col"> --}}
-    <body class="bg-[#800000]">
+    <body class="overflow-x-hidden">
 
         {{-- tempel siniii --}}
-        <nav x-data="{ open: false }" class="bg-white/30 w-4/5 z-30 absolute top-4 mx-auto mt-4 mb-4 rounded-lg left-0 right-0">
+        {{-- navbar --}}
+        <nav x-data="{ open: false }" class="backdrop-blur-lg bg-black/30 w-4/5 z-30 fixed top-4 mx-auto mt-4 mb-4 rounded-lg left-0 right-0">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
             {{-- logo --}}
@@ -58,7 +59,7 @@
                                 @if (Route::has('register'))
                                     <a
                                         href="{{ route('register') }}"
-                                        class="inline-block px-5 py-1.5 bg-gray-900/50 text-white border border-gray-700/50 rounded-[8px] text-sm leading-normal hover:bg-gray-900/80"
+                                        class="inline-block px-5 py-1.5 bg-red-900/50 text-white rounded-[8px] text-sm leading-normal hover:bg-red-900/80"
                                     >
                                         Register
                                     </a>
@@ -81,16 +82,16 @@
             <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
                 <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
                     <li>
-                        <a href="{{ route('home') }}" class="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
+                        <a href="{{ route('home') }}" class="block py-2 px-3 text-white bg-red-700 rounded-sm md:bg-transparent md:text-red-700 md:p-0 md:dark:text-red-500" aria-current="page">Home</a>
                     </li>
                     <li>
-                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
+                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
                     </li>
                     <li>
-                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Product</a>
+                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Product</a>
                     </li>
                     <li>
-                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
+                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
                     </li>
                 </ul>
             </div>
