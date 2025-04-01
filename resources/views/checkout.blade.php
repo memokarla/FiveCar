@@ -8,10 +8,10 @@
 </head>
 <body>
 
-    @extends('navbar') <!-- path yang menyimpan template navbar --> 
+    @extends('navbar') 
 
         <div>
-            @livewire('home.index') <!-- Menampilkan komponen Livewire Home -->
+            @livewire('checkout.index', ['id' => $id]) 
         </div>
         
     @extends('footer')

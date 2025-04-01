@@ -19,105 +19,35 @@
             </style>
         @endif
     </head>
-    {{-- <body class="bg-[#800000] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col"> --}}
     <body class="overflow-x-hidden">
 
-        {{-- tempel siniii --}}
-        {{-- navbar --}}
-        <nav x-data="{ open: false }" class="backdrop-blur-lg bg-black/30 w-4/5 z-30 fixed top-4 mx-auto mt-4 mb-4 rounded-lg left-0 right-0">
-            <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-
-            {{-- logo --}}
-            <a href="{{ route('home') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <img src="{{ asset('images/fivecar.png') }}" class="h-8" alt="FiveCar Logo">
-                {{-- <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">FiveCar</span> --}}
-            </a>
-
-            {{-- login register & hamburger menu --}}
-            <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-
-                {{-- login register --}}
-                <div class="w-full lg:max-w-4xl max-w-[335px] text-sm not-has-[nav]:hidden">
-                    @if (Route::has('login'))
-                        <nav class="flex items-center justify-end gap-2">
-                            @auth
-                                {{-- ini jika pengguna sudah login (@auth), maka link Dashboard akan ditampilkan. --}}
-                                {{-- <a
-                                    href="{{ url('/dashboard') }}"
-                                    class="inline-block px-5 py-1.5 border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] rounded-sm text-sm leading-normal"
-                                >
-                                    Dashboard
-                                </a> --}}
-                                @else
-                                    <a
-                                        href="{{ route('login') }}"
-                                        class="inline-block px-5 py-1.5 text-gray-300 border border-transparent  hover:text-white text-sm leading-normal"
-                                    >
-                                        Log in
-                                    </a>
-
-                                @if (Route::has('register'))
-                                    <a
-                                        href="{{ route('register') }}"
-                                        class="inline-block px-5 py-1.5 bg-red-900/50 text-white rounded-[8px] text-sm leading-normal hover:bg-red-900/80"
-                                    >
-                                        Register
-                                    </a>
-                                @endif
-                            @endauth
-                        </nav>
-                    @endif
+        <footer class="bg-white shadow-sm dark:bg-gray-900 mt-4">
+            <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+                <div class="sm:flex sm:items-center sm:justify-between">
+                    <a href="{{ route('home') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
+                        <img src="{{ asset('images/fivecar.png') }}" class="h-8" alt="FiveCar Logo">
+                    </a>
+                    <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+                        <li>
+                            <a href="{{ route('home') }}" class="hover:underline me-4 md:me-6">Home</a>
+                        </li>
+                        <li>
+                            <a href="" class="hover:underline me-4 md:me-6">Product</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('about') }}" class="hover:underline me-4 md:me-6">About</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('contact') }}" class="hover:underline me-4 md:me-6">Contact</a>
+                        </li>
+                    </ul>
                 </div>
-
-                {{-- hamburger menu --}}
-                <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-                    <span class="sr-only">Open main menu</span>
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-                    </svg>
-                </button>
+                <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="" class="hover:underline">FiveCar™</a>. All Rights Reserved.</span>
             </div>
+        </footer>
 
-            {{-- menu --}}
-            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-                <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
-                    <li>
-                        <a href="{{ route('home') }}" class="block py-2 px-3 rounded-sm md:p-0 
-                        {{ request()->routeIs('home') ? 'text-red-700' : 'text-white hover:text-red-700' }}">
-                            Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Product</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('about') }}"  class="block py-2 px-3 rounded-sm md:p-0 
-                        {{ request()->routeIs('about') ? 'text-red-700' : 'text-white hover:text-red-700' }}">
-                            About
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('contact') }}"  class="block py-2 px-3 rounded-sm md:p-0 
-                        {{ request()->routeIs('contact') ? 'text-red-700' : 'text-white hover:text-red-700' }}">
-                            Contact
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('order') }}"  class="block py-2 px-3 rounded-sm md:p-0 
-                        {{ request()->routeIs('order') ? 'text-red-700' : 'text-white hover:text-red-700' }}">
-                            My Orders
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            </div>
-        </nav>
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.5.3/flowbite.min.js"></script>
 
-        @if (Route::has('login'))
-            <div class="h-14.5 hidden lg:block"></div>
-        @endif
     </body>
 </html>

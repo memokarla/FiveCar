@@ -1,6 +1,7 @@
 <div>
     {{-- Stop trying to control. --}}
 
+    {{-- carousel --}}
     <div id="default-carousel" class="top-0 left-0 w-screen h-screen z-0" data-carousel="slide">
 
         <!-- Carousel wrapper -->
@@ -26,20 +27,20 @@
             <form class="max-w-md mx-auto">   
                 <label for="default-search" class="mb-2 text-sm font-medium text-white-900 sr-only">Search</label>
                 <div class="relative">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 z-50">
+                        <svg class="w-4 h-4" xmlxmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                         </svg>
                     </div>
                     <input type="search" id="default-search" 
-                    class="block w-full p-2 ps-10 text-sm text-white text-center border-none rounded-lg backdrop-blur-lg bg-black/5 focus:ring-0 focus:bg-black/30 rounded-[80px]" 
+                    class="block w-full p-2 ps-10 placeholder-white/70 text-sm text-white text-center border-none rounded-lg backdrop-blur-lg bg-[rgba(0,0,0,0.5)] shadow-lg shadow-red-500/50 focus:ring-0 focus:bg-black/60 focus:ring-4 focus:ring-red-500/50 focus:border-red-500 focus:border-opacity-50 hover:shadow-red-500/50 transition-all duration-300 rounded-[80px]" 
                     placeholder="Search Car..." required 
                     @click="open = !open" />
                 </div>
             </form>    
             
             {{-- filter search --}}
-            <div x-show="open" class="px-4 mt-2 rounded-[8px] backdrop-blur-lg bg-red-500/30 transition-all duration-300">
+            <div x-show="open" @click.outside="open = false" class="px-4 mt-2 rounded-[8px] backdrop-blur-xl bg-black/60 transition-all duration-300 shadow-lg hover:shadow-red-500/50">
                 {{-- atas --}}
                 <div class="flex pt-4 gap-4 justify-between w-full">
                     {{-- Brands --}}
@@ -47,8 +48,8 @@
                         {{-- <label for="">Brands</label> --}}
                         <select wire:model="byMerks" class="rounded-[8px] block w-full p-2 bg-white/70 placeholder-gray-400 text-gray focus:ring-0 focus:border-none">
                             <option selected>Brands</option>
-                            @foreach ($products as $brands)
-                                <option value="{{ $brands->id }}">{{ $brands->merk->name }}</option>
+                            @foreach ($merks as $brands)
+                                <option value="{{ $brands->id }}">{{ $brands->name }}</option>
                             @endforeach
                         </select>
                     </form>  
@@ -84,7 +85,7 @@
                     <div class="items-center pt-2 pr-4">
                         @foreach ($conditions as $condition)
                             <input id="condition-{{ $condition }}" type="radio" value="{{ $condition }}" name="condition" class="w-4 h-4 text-red-600 bg-white focus:ring-red-600 ring-offset-gray-800 border-gray-600">
-                            <label for="condition-{{ $condition }}" class="ms-2 text-sm font-medium text-gray-900 pr-4">{{ ucfirst($condition) }}</label>
+                            <label for="condition-{{ $condition }}" class="ms-2 text-sm font-medium text-white pr-4">{{ ucfirst($condition) }}</label>
                         @endforeach
                     </div>
 
@@ -115,51 +116,242 @@
         
     </div>
 
-    {{-- table --}}
-    <div class="w-screen pt-4">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        Product
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        brand
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Category
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Price
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        condition
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($products as $index => $product)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $product->name }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $product->merk->name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $product->jenis->name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            Rp {{ $product->price }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $product->condition }}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    {{-- category --}}
+    <div class="flex mt-4 gap-4 w-screen bg-red-500 p-4 items-center justify-center">
+        @foreach ($jenis as $category)
+            <div class="block max-w-sm shadow-sm rounded-[12px]">
+                <a href="{{ $category->slug }}" class="">
+                    <img class="w-full h-24 object-cover rounded-[12px] border-2 border-gray-500/50" src="{{ asset('storage/' . $category->image) }}" alt="category image" />
+                </a>
+                <p class="text-base text-center text-white">{{ $category->name }}</p>
+            </div>    
+        @endforeach
+    </div>
+    
+    {{-- merk --}}
+    <div class="flex mt-4 gap-4 w-screen bg-red-500 p-4 items-center justify-center">
+        @foreach ($merks as $merk)
+            <div class="block max-w-sm shadow-sm rounded-[12px]">
+                <a href="{{ $merk->slug }}" class="">
+                    <img class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50" src="{{ asset('storage/' . $merk->image) }}" alt="merk image" />
+                </a>
+                <p class="text-base text-center text-white">{{ $merk->name }}</p>
+            </div>    
+        @endforeach
     </div>
 
+    {{-- produk terlaris --}}
+    <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4">
+        {{-- tulisan --}}
+        <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
+            <div class="text-2xl font-medium">Best Selling Product</div>
+            <a href="#" class="text-sm font-medium flex items-center space-x-1">
+                <span>View More</span>
+                <i class="fas fa-arrow-right text-base"></i>
+            </a>
+        </div>
+
+        {{-- card --}}
+        <div class="w-full overflow-x-auto pb-4 pl-2 pr-4">
+            <div class="flex space-x-4 w-max pl-2 pr-4"> 
+                @foreach ($products->take(8) as $index => $product)
+                    <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+
+                        {{-- label & image --}}
+                        <div class="relative">
+                            <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded 
+                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
+                                {{ $product->condition === 'baru' ? 'New' : 'Second' }}
+                            </span>
+                            <a href="#">
+                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            </a>
+                        </div>    
+                        
+                        {{-- info --}}
+                        <div class="p-4">
+                            {{-- mekr --}}
+                            <a href="#">
+                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                                <p class="text-white/60">{{ $product->jenis->name }}</p>
+                            </a>
+
+                            {{-- desc --}}
+                            <div class="flex items-center mt-2.5 mb-5 py-4 px-6 border-b border-t border-white/20">
+                                <div class="flex justify-between w-full text-gray-300">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-tachometer-alt text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['top_speed'] }} km/h</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-gas-pump text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['fuel_type'] }}</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-cogs text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['transmission'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- price --}}
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-extrabold text-red-500">
+                                    {{ 'Rp ' . number_format($product->price >= 1000000000 ? $product->price / 1000000000 : $product->price / 1000000, 2) }}
+                                    {{ $product->price >= 1000000000 ? ' M' : ' Jt' }}
+                                </span>                            
+                                <a href="{{ route('product-detail', ['slug' => $product->slug]) }}" class="text-white bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 font-medium rounded-lg text-xs px-3.5 py-2.5 text-center">View Detail</a>
+                            </div>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- new --}}
+    <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4">
+        {{-- tulisan --}}
+        <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
+            <div class="text-2xl font-medium">Popular New Car</div>
+            <a href="#" class="text-sm font-medium flex items-center space-x-1">
+                <span>View More</span>
+                <i class="fas fa-arrow-right text-base"></i>
+            </a>
+        </div>
+
+        {{-- card --}}
+        <div class="w-full overflow-x-auto pb-4 pl-2 pr-4">
+            <div class="flex space-x-4 w-max pl-2 pr-4"> 
+                @foreach ($products->filter(fn($product) => $product->condition === 'baru')->take(8) as $index => $product)
+                    <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+
+                        {{-- label & image --}}
+                        <div class="relative">
+                            <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded
+                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
+                                {{ $product->condition === 'baru' ? 'New' : 'Second' }}
+                            </span>
+                            <a href="#">
+                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            </a>
+                        </div>    
+                        
+                        {{-- info --}}
+                        <div class="p-4">
+                            {{-- mekr --}}
+                            <a href="#">
+                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                                <p class="text-white/60">{{ $product->jenis->name }}</p>
+                            </a>
+
+                            {{-- desc --}}
+                            <div class="flex items-center mt-2.5 mb-5 py-4 px-6 border-b border-t border-white/20">
+                                <div class="flex justify-between w-full text-gray-300">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-tachometer-alt text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['top_speed'] }} km/h</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-gas-pump text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['fuel_type'] }}</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-cogs text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['transmission'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- price --}}
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-extrabold text-red-500">
+                                    {{ 'Rp ' . number_format($product->price >= 1000000000 ? $product->price / 1000000000 : $product->price / 1000000, 2) }}
+                                    {{ $product->price >= 1000000000 ? ' M' : ' Jt' }}
+                                </span>                            
+                                <a href="{{ route('product-detail', ['slug' => $product->slug]) }}" class="text-white bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 font-medium rounded-lg text-xs px-3.5 py-2.5 text-center">View Detail</a>
+                            </div>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- second --}}
+    <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4">
+        {{-- tulisan --}}
+        <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
+            <div class="text-2xl font-medium">Popular Second Car</div>
+            <a href="#" class="text-sm font-medium flex items-center space-x-1">
+                <span>View More</span>
+                <i class="fas fa-arrow-right text-base"></i>
+            </a>
+        </div>
+
+        {{-- card --}}
+        <div class="w-full overflow-x-auto pb-4 pl-2 pr-4">
+            <div class="flex space-x-4 w-max pl-2 pr-4"> 
+                @foreach ($products->filter(fn($product) => $product->condition === 'bekas')->take(8) as $index => $product)
+                    <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+
+                        {{-- label & image --}}
+                        <div class="relative">
+                            <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded
+                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
+                                {{ $product->condition === 'baru' ? 'New' : 'Second' }}
+                            </span>
+                            <a href="#">
+                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            </a>
+                        </div>    
+                        
+                        {{-- info --}}
+                        <div class="p-4">
+                            {{-- mekr --}}
+                            <a href="#">
+                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                                <p class="text-white/60">{{ $product->jenis->name }}</p>
+                            </a>
+
+                            {{-- desc --}}
+                            <div class="flex items-center mt-2.5 mb-5 py-4 px-6 border-b border-t border-white/20">
+                                <div class="flex justify-between w-full text-gray-300">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-tachometer-alt text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['top_speed'] }} km/h</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-gas-pump text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['fuel_type'] }}</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-cogs text-xl pb-1.5"></i>
+                                        <p class="text-sm">{{ $product->description['transmission'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- price --}}
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-extrabold text-red-500">
+                                    {{ 'Rp ' . number_format($product->price >= 1000000000 ? $product->price / 1000000000 : $product->price / 1000000, 2) }}
+                                    {{ $product->price >= 1000000000 ? ' M' : ' Jt' }}
+                                </span>                            
+                                <a href="{{ route('product-detail', ['slug' => $product->slug]) }}" class="text-white bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 font-medium rounded-lg text-xs px-3.5 py-2.5 text-center">View Detail</a>
+                            </div>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.5.3/flowbite.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </div>

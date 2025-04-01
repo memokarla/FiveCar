@@ -11,7 +11,7 @@
     @extends('navbar') <!-- path yang menyimpan template navbar --> 
 
         <div>
-            @livewire('home.index') <!-- Menampilkan komponen Livewire Home -->
+            @livewire('order-detail.index', ['id' => $id]) 
         </div>
         
     @extends('footer')

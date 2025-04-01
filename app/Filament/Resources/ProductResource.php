@@ -52,6 +52,9 @@ class ProductResource extends Resource
                             ->relationship('merk', 'name') // mengambil field name dari tabel merk (jadi dropdownnya akan menampilkan field name)
                                                            // dengan ini, model utama (product) harus memiliki relasi belongsTo ke model Merk
                             ->native(false) // menonaktifkan tampilan dropdown bawaan browser, menggantinya dengan dropdown yang lebih interaktif dari Filament
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
                             ->required(),
 
                         // milih jenis
@@ -59,12 +62,11 @@ class ProductResource extends Resource
                             ->label('Car Categories')
                             ->relationship('jenis', 'name')
                             ->native(false)
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
                             ->required(),
-                    ]),
-
-                    // grid
-                    Forms\Components\Grid::make(2) 
-                    ->schema([
+                            
                         // name
                         Forms\Components\TextInput::make('name')
                             ->label('Car Variant / Series') 
@@ -111,14 +113,37 @@ class ProductResource extends Resource
                     ->schema([
                         Forms\Components\Grid::make(2) // membuat 2 kolom dalam satu baris
                             ->schema([
+                                Forms\Components\TextInput::make('description.top_speed')
+                                    ->label('Top Speed')
+                                    ->suffix('km/h')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->required(),
                                 Forms\Components\TextInput::make('description.engine')
                                     ->label('Engine')
                                     ->required(),
-                                Forms\Components\TextInput::make('description.transmission')
-                                    ->label('Transmission') 
-                                    ->required(),
                                 Forms\Components\TextInput::make('description.power')
                                     ->label('Power')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\Select::make('description.power_unit')
+                                    ->options([
+                                        'hp' => 'HP',
+                                        'kw' => 'kW',
+                                    ])
+                                    ->default('hp')
+                                    ->native(false)
+                                    ->required(),
+                                Forms\Components\Select::make('description.transmission')
+                                    ->label('Transmission') 
+                                    ->options([
+                                        'manual' => 'Manual',
+                                        'automatic' => 'Automatic',
+                                        'cvt' => 'Continuously Variable Transmission',
+                                        'dct' => 'Dual-Clutch',
+                                        'semi-automatic' => 'Semi Automatic',
+                                    ])
+                                    ->native(false)
                                     ->required(),
                                 Forms\Components\Select::make('description.fuel_type') // dropdown untuk memilih jenis bahan bakar
                                     ->label('Fuel Type')
@@ -132,25 +157,39 @@ class ProductResource extends Resource
                                     ->required(),
                                 Forms\Components\TextInput::make('description.fuel_consumption')
                                     ->label('Fuel Consumption')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('L/100km')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.seat_capacity')
                                     ->label('Seat Capacity')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('seats')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.width')
                                     ->label('Width')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.length')
                                     ->label('Length')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.height')
                                     ->label('Height')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.ground_clearance')
                                     ->label('Ground Clearance')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                             ]),
                         ])
@@ -207,19 +246,12 @@ class ProductResource extends Resource
 
                 Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
                     ->label('Is Active'), 
-
-                Tables\Columns\ToggleColumn::make('on_sale') 
-                    ->label('On Sale'),
                     
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
                     ->trueLabel('Aktif') // Menampilkan hanya yang aktif
                     ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
-                
-                Tables\Filters\TernaryFilter::make('on_sale') 
-                    ->trueLabel('Aktif') 
-                    ->falseLabel('Nonaktif'), 
             ])
             ->actions([
                 \Filament\Tables\Actions\ActionGroup::make([

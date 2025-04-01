@@ -23,7 +23,7 @@ class UserResource extends Resource
     // mengatur urutannya
     public static function getNavigationSort(): ?int
     {
-        return 6; 
+        return 7; 
     }
 
     public static function form(Form $form): Form

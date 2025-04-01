@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('tax', 15, 2); 
             $table->enum('status', ['new', 'processing', 'shipped', 'delivered', 'canceled'])->default('new');
             $table->string('shipping_method');
-            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
+            $table->foreignId('user_id')->default(1)->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }

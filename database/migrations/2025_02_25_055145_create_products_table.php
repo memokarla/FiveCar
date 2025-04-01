@@ -21,7 +21,6 @@ return new class extends Migration
             $table->json('description');
             $table->enum('condition', ['baru', 'bekas']);
             $table->boolean('is_active')->default(true);
-            $table->boolean('on_sale')->default(false);
             $table->foreignId('jenis_id')->constrained('jenis')->onDelete('restrict');
             $table->foreignId('merks_id')->constrained('merks')->onDelete('restrict');
             $table->timestamps();
