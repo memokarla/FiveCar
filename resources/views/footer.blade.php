@@ -32,7 +32,7 @@
                             <a href="{{ route('home') }}" class="hover:underline me-4 md:me-6">Home</a>
                         </li>
                         <li>
-                            <a href="" class="hover:underline me-4 md:me-6">Product</a>
+                            <a href="{{ route('product') }}" class="hover:underline me-4 md:me-6">Product</a>
                         </li>
                         <li>
                             <a href="{{ route('about') }}" class="hover:underline me-4 md:me-6">About</a>

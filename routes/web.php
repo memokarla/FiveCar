@@ -6,6 +6,10 @@ Route::get('/', function () {
     return view('home'); 
 })->name('home');
 
+Route::get('/product', function () {
+    return view('product'); 
+})->name('product');
+
 Route::get('/product-detail/{slug}', function ($slug) {
     return view('product-detail', ['slug' => $slug]);
 })->name('product-detail');
