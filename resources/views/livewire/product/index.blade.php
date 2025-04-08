@@ -15,8 +15,8 @@
                             </svg>
                         </div>
                         <input type="search" id="default-search" 
-                        class="block w-full p-2 ps-10 placeholder-white/70 text-sm text-white text-center border-none rounded-lg backdrop-blur-lg bg-[rgba(0,0,0,0.5)] shadow-lg shadow-red-500/50 
-                        focus:ring-0 focus:bg-black/60 focus:ring-4 focus:ring-red-500/50 focus:border-red-500 focus:border-opacity-50 hover:shadow-red-500/50 rounded-[80px]" 
+                        class="block w-full p-2 ps-10 placeholder-white/70 text-sm text-white text-center border-none rounded-lg backdrop-blur-lg bg-[rgba(0,0,0,0.5)] 
+                        focus:bg-black/60 focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:border-opacity-50 rounded-lg" 
                         wire:model.live="search" placeholder="Search Car..." required />
                     </div>
                 </form>    
@@ -24,12 +24,12 @@
 
             {{-- tab --}}
             <div class="flex"> 
-                <button class="flex items-center justify-center cursor-pointer" data-collapse-toggle="filter">
+                <button class="flex items-center justify-center text-white cursor-pointer" data-collapse-toggle="filter">
                     <div class="mr-2">Filter</div>
                     <i class="fa-solid fa-filter"></i>
                 </button>
                 <div class="mx-4 py-2 border-l-2 border-red-900"></div>
-                <div class="flex items-center justify-center cursor-pointer" data-collapse-toggle="short">
+                <div class="flex items-center justify-center text-white cursor-pointer" data-collapse-toggle="short">
                     <div class="mr-2">Short</div>
                     <i class="fa-solid fa-sort"></i>
                 </div>
@@ -38,7 +38,7 @@
 
         {{-- hasil filter --}}
         <div class="border border-red-500 mt-4 px-4 py-2 flex gap-4 rounded-lg" >
-            <div class="border-r pr-4 flex items-center justify-center">Filter</div>
+            <div class="border-r border-red-500 pr-4 flex items-center justify-center text-white">Filter</div>
 
             <div class="flex gap-2 flex-wrap">
                 {{-- merk --}}
@@ -86,8 +86,18 @@
                 {{-- fuel type --}}
                 @foreach ($selected_fuelType as $fuelType)
                     <div class="flex items-center bg-red-500 text-white rounded px-2 py-1">
-                        <span>{{ ucfirst($fuelType) }}</span>
+                        <span>{{ ($fuelType) }}</span>
                         <button wire:click="removeFilter('fuelType', '{{ $fuelType }}')" class="ml-2 text-white">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endforeach
+
+                {{-- transmission --}}
+                @foreach ($selected_transmission as $transmission)
+                    <div class="flex items-center bg-red-500 text-white rounded px-2 py-1">
+                        <span>{{ ucfirst($transmission) }}</span>
+                        <button wire:click="removeFilter('transmission', '{{ $transmission }}')" class="ml-2 text-white">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -103,17 +113,33 @@
                     </div>
                 @endif
 
+                {{-- sort by --}}
+                @if ($selected_sortBy)
+                    <div class="flex items-center bg-red-500 text-white rounded px-2 py-1">
+                        <span>{{ $selected_sortBy }}</span> 
+                        <button wire:click="removeFilter('sortBy')" class="ml-2 text-white">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+
             </div>
         </div>
 
         {{-- filter --}}
-        <div class="hidden flex justify-between mt-4 bg-pink-300 rounded-lg p-4" id="filter">
-            <div class="flex flex-wrap justify-start gap-x-20 gap-y-4">
+        <div class="hidden mt-4 bg-pink-300 rounded-lg p-4" id="filter">
+            <div class="flex justify-between">
+                <div class="text-xl font-bold">
+                    Filter By
+                </div>
+
+                <i class="fa-solid fa-x cursor-pointer" data-collapse-toggle="filter"></i>
+            </div>
+            
+            <div class="flex flex-wrap justify-start mt-4 gap-x-20 gap-y-4">
                 {{-- merk --}}
                 <div>
-                    <div class="text-xl font-bold">
-                        Brands
-                    </div>
+                    <div class="text-lg">Brands</div>
     
                     <div class="flex gap-4 mt-2">
                         @foreach ($merks as $merk)
@@ -143,7 +169,7 @@
     
                 {{-- jenis --}}
                 <div>
-                    <div class="text-xl font-bold">
+                    <div class="text-lg">
                         Category
                     </div>
     
@@ -175,7 +201,7 @@
     
                 {{-- kondisi --}}
                 <div>
-                    <div class="text-xl font-bold">
+                    <div class="text-lg">
                         Condition
                     </div>
     
@@ -222,7 +248,7 @@
     
                 {{-- fuel type --}}
                 <div>
-                    <div class="text-xl font-bold">
+                    <div class="text-lg">
                         Fuel Type
                     </div>
     
@@ -305,9 +331,113 @@
                     </div>
                 </div>
     
+                {{-- transmission --}}
+                <div>
+                    <div class="text-lg">
+                        Transmission
+                    </div>
+    
+                    <div class="flex gap-4 mt-2">
+                        {{-- manual --}}
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" wire:model.live="selected_transmission" value="manual" class="peer sr-only" />
+                            {{-- before --}}
+                            <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                                <div class="flex items-center text-center justify-between p-2">
+                                    <span class="z-3 text-base pr-2">Manual</span>
+                                    <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                                </div>
+                            </div>
+                            {{-- after --}}
+                            <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                                <div class="flex items-center justify-between p-2">
+                                    <span class="text-base pr-2">Manual</span>
+                                    <i class="fa-solid fa-check text-white-500"></i>
+                                </div>
+                            </div>
+                        </label>
+    
+                        {{-- automatic --}}
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" wire:model.live="selected_transmission" value="automatic" class="peer sr-only" />
+                            {{-- before --}}
+                            <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                                <div class="flex items-center text-center justify-between p-2">
+                                    <span class="z-3 text-base pr-2">Automatic</span>
+                                    <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                                </div>
+                            </div>
+                            {{-- after --}}
+                            <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                                <div class="flex items-center justify-between p-2">
+                                    <span class="text-base pr-2">Automatic</span>
+                                    <i class="fa-solid fa-check text-white-500"></i>
+                                </div>
+                            </div>
+                        </label>
+    
+                        {{-- cvt --}}
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" wire:model.live="selected_transmission" value="cvt" class="peer sr-only" />
+                            {{-- before --}}
+                            <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                                <div class="flex items-center text-center justify-between p-2">
+                                    <span class="z-3 text-base pr-2">Continuously Variable Transmission</span>
+                                    <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                                </div>
+                            </div>
+                            {{-- after --}}
+                            <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                                <div class="flex items-center justify-between p-2">
+                                    <span class="text-base pr-2">Continuously Variable Transmission</span>
+                                    <i class="fa-solid fa-check text-white-500"></i>
+                                </div>
+                            </div>
+                        </label>
+    
+                        {{-- dct --}}
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" wire:model.live="selected_transmission" value="dct" class="peer sr-only" />
+                            {{-- before --}}
+                            <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                                <div class="flex items-center text-center justify-between p-2">
+                                    <span class="z-3 text-base pr-2">Dual-Clutch</span>
+                                    <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                                </div>
+                            </div>
+                            {{-- after --}}
+                            <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                                <div class="flex items-center justify-between p-2">
+                                    <span class="text-base pr-2">Dual-Clutch</span>
+                                    <i class="fa-solid fa-check text-white-500"></i>
+                                </div>
+                            </div>
+                        </label>
+    
+                        {{-- semi-automatic --}}
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" wire:model.live="selected_transmission" value="semi-automatic" class="peer sr-only" />
+                            {{-- before --}}
+                            <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                                <div class="flex items-center text-center justify-between p-2">
+                                    <span class="z-3 text-base pr-2">Semi Automatic</span>
+                                    <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                                </div>
+                            </div>
+                            {{-- after --}}
+                            <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                                <div class="flex items-center justify-between p-2">
+                                    <span class="text-base pr-2">Semi Automatic</span>
+                                    <i class="fa-solid fa-check text-white-500"></i>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+    
                 {{-- harga --}}
                 <div>
-                    <div class="text-xl font-bold">
+                    <div class="text-lg">
                         Price
                     </div>
                     <form class="max-w-sm w-64 pt-2">
@@ -323,29 +453,109 @@
                     </form>
                 </div>            
             </div>
-
-            <i class="fa-solid fa-x cursor-pointer" data-collapse-toggle="filter"></i>
         </div>
 
         {{-- shorting --}}
-        <div class="hidden flex justify-between mt-4 bg-yellow-300 rounded-lg p-4" id="short">
-            <div class="gap-y-4">
+        <div class="hidden mt-4 bg-yellow-300 rounded-lg p-4 grid gap-4" id="short">
+            <div class="flex justify-between">
                 <div class="text-xl font-bold">
                     Short By
                 </div>
 
-                <form class="max-w-sm w-64 pt-2">
-                    <select wire:model.live="selected_sortBy"  
-                    class="rounded-[8px] block w-full p-2 border border-red-500 bg-transparent placeholder-gray-400 text-gray focus:border-red-500">
-                        <option value="default">Sort By</option>
-                        <option value="price_asc">Price: Low to High</option>
-                        <option value="price_desc">Price: High to Low</option>
-                        <option value="newest">Newest</option>
-                    </select>
-                </form>
+                <i class="fa-solid fa-x cursor-pointer" data-collapse-toggle="short"></i>
             </div>
 
-            <i class="fa-solid fa-x cursor-pointer" data-collapse-toggle="short"></i>
+            {{-- Price --}}
+            <div class="flex justify-between border-b pb-4">
+                <div class="text-lg">Price</div>
+
+                <div class="grid gap-2">
+                    {{-- low - hight --}}
+                    <label class="cursor-pointer relative">
+                        <input type="radio" wire:model.live="selected_sortBy" name="sortBy" value="Price: Low to High" class="peer sr-only" />
+                        {{-- before --}}
+                        <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                            <div class="flex items-center text-center justify-between p-2">
+                                <span class="z-3 text-base pr-2">Low to High</span>
+                                <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                            </div>
+                        </div>
+                        {{-- after --}}
+                        <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                            <div class="flex items-center justify-between p-2">
+                                <span class="text-base pr-2">Low to High</span>
+                                <i class="fa-solid fa-check text-white-500"></i>
+                            </div>
+                        </div>
+                    </label>
+
+                    {{-- hight- low --}}
+                    <label class="cursor-pointer relative">
+                        <input type="radio" wire:model.live="selected_sortBy" name="sortBy" value="Price: High to Low" class="peer sr-only" />
+                        {{-- before --}}
+                        <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                            <div class="flex items-center text-center justify-between p-2">
+                                <span class="z-3 text-base pr-2">Hight to Low</span>
+                                <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                            </div>
+                        </div>
+                        {{-- after --}}
+                        <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                            <div class="flex items-center justify-between p-2">
+                                <span class="text-base pr-2">Hight to Low</span>
+                                <i class="fa-solid fa-check text-white-500"></i>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            {{-- Newest --}}
+            <div class="flex justify-between border-b pb-4">
+                <div class="text-lg">Newest</div>
+
+                {{-- newest --}}
+                <label class="cursor-pointer relative">
+                    <input type="radio" wire:model.live="selected_sortBy" name="sortBy" value="Newest" class="peer sr-only" />
+                    {{-- before --}}
+                    <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                        <div class="flex items-center text-center justify-between p-2">
+                            <span class="z-3 text-base pr-2">Newest</span>
+                            <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                        </div>
+                    </div>
+                    {{-- after --}}
+                    <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                        <div class="flex items-center justify-between p-2">
+                            <span class="text-base pr-2">Newest</span>
+                            <i class="fa-solid fa-check text-white-500"></i>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            {{-- Best Selling --}}
+            <div class="flex justify-between border-b pb-4">
+                <div class="text-lg">Best Selling</div>
+
+                <label class="cursor-pointer relative">
+                    <input type="radio" wire:model.live="selected_sortBy" name="sortBy" value="Best Selling" class="peer sr-only" />
+                    {{-- before --}}
+                    <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
+                        <div class="flex items-center text-center justify-between p-2">
+                            <span class="z-3 text-base pr-2">Best Selling</span>
+                            <i class="fa-solid fa-check text-white-500 opacity-0"></i>
+                        </div>
+                    </div>
+                    {{-- after --}}
+                    <div class="absolute top-0 r-0 opacity-0 rounded-lg border border-red-500 peer-checked:opacity-100 checked peer-checked:bg-red-500 peer-checked:text-white">
+                        <div class="flex items-center justify-between p-2">
+                            <span class="text-base pr-2">Best Selling</span>
+                            <i class="fa-solid fa-check text-white-500"></i>
+                        </div>
+                    </div>
+                </label>
+            </div>
         </div>
         
         {{-- product --}}
@@ -408,7 +618,6 @@
         <div class="mt-4">
             {{ $products->links() }}
         </div>
-
     </div>
 
     

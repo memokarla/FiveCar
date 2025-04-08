@@ -13,7 +13,7 @@ class Index extends Component
     public $product;
     public $id; 
 
-    public $name, $phone, $street_address, $city, $state, $zip_code, $payment_method, $shipping_method, $grand_total; 
+    public $name, $phone, $street_address, $city, $state, $zip_code, $payment_method, $payment_status, $shipping_method, $grand_total; 
     public $tax = 0;
     
     public function placeOrder() {
@@ -25,13 +25,14 @@ class Index extends Component
             'state' => 'required',
             'zip_code' => 'required|numeric',
             'payment_method' => 'required',
+            'payment_status' => 'required',
             'shipping_method' => 'required',
         ]);
     
         $order = Order::create([
             'grand_total' => $this->product->price * (1 + $this->tax / 100),
             'payment_method' => $this->payment_method,
-            'payment_status' => 'pending',
+            'payment_status' => $this->payment_status, 
             'shipping_method' => $this->shipping_method,
             'tax' => $this->tax,
             'status' => 'new',
@@ -58,6 +59,15 @@ class Index extends Component
     
         session()->flash('message', 'Payment Successful!');
         session()->flash('order_id', $order->id);
+    }
+
+    public function updatedPaymentMethod($value) // Livewire akan otomatis memanggil updated{NamaProperti} ketika properti itu diubah
+    {
+        if ($value === 'cod') {
+            $this->payment_status = 'pending';
+        } elseif ($value === 'stripe') {
+            $this->payment_status = 'paid';
+        }
     }
     
     public function updatedShippingMethod($value)

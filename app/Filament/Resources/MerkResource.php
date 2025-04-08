@@ -50,11 +50,13 @@ class MerkResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Brand') // Tulisan ini ada di atas form
                             ->placeholder('Brand') // Tulisan ini ada di dalam form
+                            ->reactive() // merespons perubahan pada field lain secara otomatis
                             ->afterStateUpdated(function (callable $set, $state) {  
                                 $set('slug', \Illuminate\Support\Str::slug($state));
                             })
                             ->required(),
-  
+
+                        // slug
                         Forms\Components\TextInput::make('slug')
                             ->label('Slug')
                             ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual

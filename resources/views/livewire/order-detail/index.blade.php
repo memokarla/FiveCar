@@ -12,7 +12,7 @@
                 <div class="items-center justify-center">
                     <h1 class="text-sm sm:text-lg lg:text-lg">Order ID</h1>
                     <p class="text-sm sm:text-lg lg:text-lg text-red-700">
-                        {{ $order->id }}
+                        {{ $order->code_order }}
                     </p>
                 </div>
             </div>

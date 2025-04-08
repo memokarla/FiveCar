@@ -16,7 +16,7 @@
 
             {{-- button --}}
             <div class="grid grid-cols-2 gap-4 mt-12 w-full">
-                <a href="" class="text-center text-green-700 border-2 border border-green-500 bg-transparent font-medium rounded-lg text-sm w-full py-2.5 hover:bg-green-800 hover:border-green-800 hover:text-white min-w-0">
+                <a href="{{ route('product') }}" class="text-center text-green-700 border-2 border border-green-500 bg-transparent font-medium rounded-lg text-sm w-full py-2.5 hover:bg-green-800 hover:border-green-800 hover:text-white min-w-0">
                     Back to Product
                 </a>
                 <a href="{{ route('orderDetail', ['id' => $order->id]) }}" class="text-center text-white bg-green-500 font-medium rounded-lg text-sm w-full py-2.5 hover:bg-green-800 min-w-0">

@@ -20,9 +20,8 @@
         @endif
     </head>
     {{-- <body class="bg-[#800000] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col"> --}}
-    <body class="overflow-x-hidden">
+    <body class="overflow-x-auto">
 
-        {{-- tempel siniii --}}
         {{-- navbar --}}
         <nav x-data="{ open: false }" class="backdrop-blur-lg bg-black/30 w-4/5 z-30 fixed top-4 mx-auto mt-4 mb-4 rounded-lg left-0 right-0">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -41,13 +40,35 @@
                     @if (Route::has('login'))
                         <nav class="flex items-center justify-end gap-2">
                             @auth
-                                {{-- ini jika pengguna sudah login (@auth), maka link Dashboard akan ditampilkan. --}}
-                                {{-- <a
-                                    href="{{ url('/dashboard') }}"
-                                    class="inline-block px-5 py-1.5 border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] rounded-sm text-sm leading-normal"
-                                >
-                                    Dashboard
-                                </a> --}}
+                                {{-- after login --}}
+                                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="px-5 py-1.5 bg-red-900/50 text-white rounded-[8px] text-sm leading-normal hover:bg-red-900/80 inline-flex items-center" type="button">
+                                    <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
+                                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                </svg>
+                                </button>
+
+                                <div id="dropdown" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow-sm w-44 bg-[#1a1a1a]">
+                                    <div class="space-y-1">
+                                        <li class="block px-4 py-2 text-sm text-white hover:bg-red-800/70 hover:rounded-lg cursor-pointer">
+                                            <form method="POST" action="{{ route('logout') }}" x-data class="block py-1.5 md:py-2 lg:py-2 px-1.5 md:px-3 lg:px-3 rounded-sm md:p-0">
+                                                @csrf
+                                                <a href="{{ route('logout') }}"
+                                                            @click.prevent="$root.submit();">
+                                                    {{ __('Log Out') }}
+                                                </a>
+                                            </form>
+                                        </li>
+                                        <li class="hidden md:block lg:block px-4 p-2 text-sm text-white hover:bg-red-800/70 hover:rounded-lg cursor-pointer ">
+                                            <a href="{{ route('order') }}"  class="block py-1.5 md:py-2 lg:py-2 px-1.5 md:px-3 lg:px-3 rounded-sm md:p-0
+                                            {{ request()->routeIs('order') ? 'text-red-700' : 'text-white' }}">
+                                                My Orders
+                                            </a>
+                                        </li>
+                                    </div>
+                                </div>
+
+                                {{-- before login --}}
                                 @else
                                     <a
                                         href="{{ route('login') }}"
@@ -105,12 +126,14 @@
                             Contact
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('order') }}"  class="block py-2 px-3 rounded-sm md:p-0 
-                        {{ request()->routeIs('order') ? 'text-red-700' : 'text-white hover:text-red-700' }}">
-                            My Orders
-                        </a>
-                    </li>
+                    @auth
+                        <li>
+                            <a href="{{ route('order') }}"  class="block md:hidden lg:hidden py-2 px-3 rounded-sm md:p-0 
+                            {{ request()->routeIs('order') ? 'text-red-700' : 'text-white hover:text-red-700' }}">
+                                My Orders
+                            </a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
             

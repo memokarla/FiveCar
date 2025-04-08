@@ -71,18 +71,19 @@ class ProductResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Variant / Series') 
                             ->placeholder('Varian or Series') 
+                            ->reactive()
                             ->afterStateUpdated(function (callable $set, $state) {  
                                 $set('slug', \Illuminate\Support\Str::slug($state));
                             })
                             ->required(),
-  
+
                         // slug
                         Forms\Components\TextInput::make('slug')
                             ->label('Slug')
                             ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                     ]),
-                    
+                
                     //  price
                     Forms\Components\TextInput::make('price')
                         ->label('Price (Million/Billion)')
@@ -225,7 +226,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')
                     ->searchable(),
-
                 Tables\Columns\TextColumn::make('price')
                     ->label('Car Price')
                     ->formatStateUsing(fn ($state) =>  // state itu nilanya ya

@@ -60,50 +60,94 @@
     </div>
 
     {{-- category --}}
-    <div class="flex mt-4 gap-4 w-screen bg-red-500 p-4 items-center justify-center">
-        @foreach ($jenis as $category)
-            <div class="block max-w-sm shadow-sm rounded-[12px]">
-                <a href="/product?category[0]={{ $category->id }}" class="">
-                    <img class="w-full h-24 object-cover rounded-[12px] border-2 border-gray-500/50" src="{{ asset('storage/' . $category->image) }}" alt="category image" />
-                </a>
-                <p class="text-base text-center text-white">{{ $category->name }}</p>
-            </div>    
-        @endforeach
+    <div class="flex mt-4 gap-4 w-screen bg-[#1E1E1E] p-4 items-center justify-center">
+        <!-- Tombol Previous -->
+        <button 
+            class="px-2 py-1 bg-white/30 rounded-full text-black"
+            onclick="document.getElementById('jenisContainer').scrollBy({ left: -150, behavior: 'smooth' });">
+            &lt;
+        </button>
+
+        <!-- Container Jenis -->
+        <div id="jenisContainer"
+            class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
+            style="-ms-overflow-style: none; scrollbar-width: none;">
+            @foreach ($jenis as $category)
+                <div class="block max-w-sm shadow-sm rounded-[12px]">
+                    <a href="/product?category[0]={{ $category->id }}" class="flex-none snap-center">
+                        <img src="{{ asset('storage/' . $category->image) }}" 
+                            class="w-36 h-24 object-cover rounded-[12px] border-2 border-gray-500/50">
+                    </a>
+                    <p class="text-base text-center text-white">{{ $category->name }}</p>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Tombol Next -->
+        <button 
+            class="px-2 py-1 bg-white/30 rounded-full text-black"
+            onclick="document.getElementById('jenisContainer').scrollBy({ left: 150, behavior: 'smooth' });">
+            &gt;
+        </button>
     </div>
     
     {{-- merk --}}
-    <div class="flex mt-4 gap-4 w-screen bg-red-500 p-4 items-center justify-center">
-        @foreach ($merks as $merk)
-            <div class="block max-w-sm shadow-sm rounded-[12px]">
-                <a href="/product?brand[0]={{ $merk->id }}" class="">
-                    <img class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50" src="{{ asset('storage/' . $merk->image) }}" alt="merk image" />
-                </a>
-                <p class="text-base text-center text-white">{{ $merk->name }}</p>
-            </div>    
-        @endforeach
+    <div class="flex mt-4 gap-4 w-screen bg-[#1E1E1E] p-4 items-center justify-center">
+        <!-- Tombol Previous -->
+        <button 
+            class="px-2 py-1 bg-white/30 rounded-full text-black"
+            onclick="document.getElementById('merkContainer').scrollBy({ left: -150, behavior: 'smooth' });">
+            &lt;
+        </button>
+
+        <!-- Container Merk -->
+        <div id="merkContainer"
+            class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
+            style="-ms-overflow-style: none; scrollbar-width: none;">
+            @foreach ($merks as $merk)
+                <div class="block max-w-sm shadow-sm rounded-[12px]">
+                    <a href="/product?brand[0]={{ $merk->id }}" class="flex-none snap-center">
+                        <img src="{{ asset('storage/' . $merk->image) }}" 
+                            class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50">
+                    </a>
+                    <p class="text-base text-center text-white">{{ $merk->name }}</p>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Tombol Next -->
+        <button 
+            class="px-2 py-1 bg-white/30 rounded-full text-black"
+            onclick="document.getElementById('merkContainer').scrollBy({ left: 150, behavior: 'smooth' });">
+            &gt;
+        </button>
     </div>
 
     {{-- produk terlaris --}}
-    <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4">
+    {{-- <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4"> --}}
+    <div class="w-screen bg-[#181818] mt-4">
         {{-- tulisan --}}
         <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
             <div class="text-2xl font-medium">Best Selling Product</div>
-            <a href="#" class="text-sm font-medium flex items-center space-x-1">
+            <a href="product?sortBy=Best+Selling" class="text-sm font-medium flex items-center space-x-1">
                 <span>View More</span>
                 <i class="fas fa-arrow-right text-base"></i>
             </a>
         </div>
 
         {{-- card --}}
-        <div class="w-full overflow-x-auto pb-4 pl-2 pr-4">
-            <div class="flex space-x-4 w-max pl-2 pr-4"> 
+        <div class="w-full overflow-x-auto p-4">
+            <div class="flex space-x-4 w-max gap-2 px-4"> 
                 @foreach ($products->take(8) as $index => $product)
-                    <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+                    {{-- <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm"> --}}
+                    <div class="w-full max-w-sm bg-[#222] rounded-[12px] shadow-lg shadow-black/30">
 
                         {{-- label & image --}}
                         <div class="relative">
-                            <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded 
-                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
+                            {{-- <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded 
+                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}"> --}}
+                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded 
+                            {{ $product->condition === 'baru' ? 'bg-green-500/80' : 'bg-yellow-400/80' }}">                              
                                 {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                             </span>
                             <div>
@@ -120,7 +164,7 @@
                             </div>
 
                             {{-- desc --}}
-                            <div class="flex items-center mt-2.5 mb-5 py-4 px-6 border-b border-t border-white/20">
+                            <div class="flex items-center mt-2.5 mb-5 py-4 px-6 border-b border-t border-white/10">
                                 <div class="flex justify-between w-full text-gray-300">
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-tachometer-alt text-xl pb-1.5"></i>
@@ -139,7 +183,7 @@
 
                             {{-- price --}}
                             <div class="flex items-center justify-between">
-                                <span class="text-2xl font-extrabold text-red-500">
+                                <span class="text-2xl font-extrabold text-[#ff4d4d]">
                                     {{ 'Rp ' . number_format($product->price >= 1000000000 ? $product->price / 1000000000 : $product->price / 1000000, 2) }}
                                     {{ $product->price >= 1000000000 ? ' M' : ' Jt' }}
                                 </span>                            
@@ -154,26 +198,26 @@
     </div>
 
     {{-- new --}}
-    <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4">
+    <div class="w-screen bg-[#181818] mt-4">
         {{-- tulisan --}}
         <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
             <div class="text-2xl font-medium">Popular New Car</div>
-            <a href="#" class="text-sm font-medium flex items-center space-x-1">
+            <a href="product?sortBy=Best+Selling&condition[0]=baru" class="text-sm font-medium flex items-center space-x-1">
                 <span>View More</span>
                 <i class="fas fa-arrow-right text-base"></i>
             </a>
         </div>
 
         {{-- card --}}
-        <div class="w-full overflow-x-auto pb-4 pl-2 pr-4">
-            <div class="flex space-x-4 w-max pl-2 pr-4"> 
+        <div class="w-full overflow-x-auto p-4">
+            <div class="flex space-x-4 w-max gap-2 px-4"> 
                 @foreach ($products->filter(fn($product) => $product->condition === 'baru')->take(8) as $index => $product)
-                    <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+                <div class="w-full max-w-sm bg-[#222] rounded-[12px] shadow-lg shadow-black/30">
 
                         {{-- label & image --}}
                         <div class="relative">
-                            <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded
-                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
+                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded 
+                            {{ $product->condition === 'baru' ? 'bg-green-500/80' : 'bg-yellow-400/80' }}">                              
                                 {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                             </span>
                             <div>
@@ -224,26 +268,26 @@
     </div>
 
     {{-- second --}}
-    <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4">
+    <div class="w-screen bg-[#181818] mt-4">
         {{-- tulisan --}}
         <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
             <div class="text-2xl font-medium">Popular Second Car</div>
-            <a href="#" class="text-sm font-medium flex items-center space-x-1">
+            <a href="product?sortBy=Best+Selling&condition[0]=second" class="text-sm font-medium flex items-center space-x-1">
                 <span>View More</span>
                 <i class="fas fa-arrow-right text-base"></i>
             </a>
         </div>
 
         {{-- card --}}
-        <div class="w-full overflow-x-auto pb-4 pl-2 pr-4">
-            <div class="flex space-x-4 w-max pl-2 pr-4"> 
+        <div class="w-full overflow-x-auto p-4">
+            <div class="flex space-x-4 w-max gap-2 px-4"> 
                 @foreach ($products->filter(fn($product) => $product->condition === 'bekas')->take(8) as $index => $product)
-                    <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+                <div class="w-full max-w-sm bg-[#222] rounded-[12px] shadow-lg shadow-black/30">
 
                         {{-- label & image --}}
                         <div class="relative">
-                            <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded
-                                  {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
+                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded 
+                            {{ $product->condition === 'baru' ? 'bg-green-500/80' : 'bg-yellow-400/80' }}">                              
                                 {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                             </span>
                             <div>

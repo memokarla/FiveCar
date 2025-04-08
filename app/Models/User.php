@@ -10,8 +10,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Order;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasRoles;
@@ -69,5 +72,11 @@ class User extends Authenticatable
 
     public function orders () {
         return $this->hasMany(Order::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool {
+        // return $this->email == 'karla@gmail.com';
+        return $this->hasRole('super_admin');
+        // return $this->hasAnyRole(['superadmin', 'editor']);
     }
 }

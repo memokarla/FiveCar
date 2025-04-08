@@ -56,6 +56,16 @@ class OrderResource extends Resource
                                     'stripe' => 'Stripe',
                                 ])
                                 ->native(false)
+                                ->reactive() // merespons perubahan pada field lain secara otomatis
+                                ->afterStateUpdated(function (callable $set, $state) {
+                                // jadi begini, setelah field payment_method ini diisi (dengan memilih dropdown hendak cod/stripe), maka nilai set akan terbaca, yaitu
+                                // jika nilai payment_method cod, maka nilai payment_statusnya pending, pun dengan nilai payment_method stripe, maka nilai payment_statusnya paid
+                                    if ($state == 'cod') {
+                                        $set('payment_status', 'pending'); 
+                                    } elseif ($state == 'stripe') {
+                                        $set('payment_status', 'paid'); 
+                                    }
+                                })
                                 ->required(),
 
                             // payment status
@@ -349,6 +359,11 @@ class OrderResource extends Resource
                     ->label('ID') 
                     ->getStateUsing(fn ($record) => Order::orderBy('id')->pluck('id') 
                     ->search($record->id) + 1), 
+
+                // code
+                Tables\Columns\TextColumn::make('code_order')
+                    ->label('Code')
+                    ->searchable(),
 
                 // user
                 Tables\Columns\TextColumn::make('user.name')

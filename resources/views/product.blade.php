@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
-<body>
+<body class="overflow-x-hidden bg-[#121212]">
 
     @extends('navbar') <!-- path yang menyimpan template navbar --> 
 

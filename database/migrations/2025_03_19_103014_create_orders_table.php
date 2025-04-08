@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('code_order')->unique();
             $table->decimal('grand_total', 15, 2);
             $table->string('payment_method');
             $table->string('payment_status');
             $table->decimal('tax', 15, 2); 
             $table->enum('status', ['new', 'processing', 'shipped', 'delivered', 'canceled'])->default('new');
             $table->string('shipping_method');
-            $table->foreignId('user_id')->default(1)->constrained('users')->onDelete('restrict'); // DIGANTI LHOO
+            $table->foreignId('user_id')->constrained('users')->onDelete('restrict'); 
             $table->timestamps();
         });
     }

@@ -45,22 +45,24 @@ class JenisResource extends Resource
                             ->image() 
                             ->directory('jenis_image') // Folder penyimpanan di storage/app/public/[jenis_image]
                             ->required(), // Wajib
-
+                            
                         // name
                         Forms\Components\TextInput::make('name')
                             ->label('Car Categories') // Tulisan ini ada di atas form
                             ->placeholder('Categories') // Tulisan ini ada di dalam form
+                            ->reactive() // merespons perubahan pada field lain secara otomatis
                             ->afterStateUpdated(function (callable $set, $state) {  
-                              // afterStateUpdated -> callback yang dijalankan setelah nilai state pada field diperbarui oleh pengguna
-                              // function (callable $set, $state) 
-                              // -> $set (setter): mengubah atau mengisi field lain (dala konteks ini adalah 'slug') dalam form berdasarkan input name (ini tegantung $set yang diatur) 
-                              // -> $state: nilai terkini dari input field (misal aku isi field name dengan "Sedan", maka maka $state akan berisi "Sedan")
+                            // afterStateUpdated -> callback yang dijalankan setelah nilai state pada field diperbarui oleh pengguna
+                            // function (callable $set, $state) 
+                            // -> $set (setter): mengubah atau mengisi field lain (dala konteks ini adalah 'slug') dalam form berdasarkan input name (ini tegantung $set yang diatur) 
+                            // -> $state: nilai terkini dari input field (misal aku isi field name dengan "Sedan", maka maka $state akan berisi "Sedan")
                                 $set('slug', \Illuminate\Support\Str::slug($state));
                                 // set inilah yang menjadi acuan nilai pada $state hendak diapakan
                                 // \Illuminate\Support\Str::slug($state) -> Mengubah nilai name menjadi slug
                             })
                             ->required(),
 
+                        // slug
                         Forms\Components\TextInput::make('slug')
                             ->label('Slug')
                             ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
