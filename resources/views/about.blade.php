@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <link rel="icon" href="{{ asset('images/logoFivecar.png') }}" type="image/x-icon">
+    <title>About - FiveCar</title>
 </head>
-<body>
+<body class="overflow-x-hidden bg-[#121212]">
 
     @extends('navbar') <!-- path yang menyimpan template navbar --> 
 

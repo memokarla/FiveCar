@@ -16,7 +16,8 @@
                         </div>
                         <input type="search" id="default-search" 
                         class="block w-full p-2 ps-10 placeholder-white/70 text-sm text-white text-center border-none rounded-lg backdrop-blur-lg bg-[rgba(0,0,0,0.5)] 
-                        focus:bg-black/60 focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:border-opacity-50 rounded-lg" 
+                        focus:bg-black/60 focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:border-opacity-50 
+                        hover:shadow-md hover:shadow-red-500/30 transition-shadow duration-200"
                         wire:model.live="search" placeholder="Search Car..." required />
                     </div>
                 </form>    
@@ -24,12 +25,12 @@
 
             {{-- tab --}}
             <div class="flex"> 
-                <button class="flex items-center justify-center text-white cursor-pointer" data-collapse-toggle="filter">
+                <div class="flex items-center justify-center text-white hover:text-red-500 cursor-pointer" data-collapse-toggle="filter">
                     <div class="mr-2">Filter</div>
                     <i class="fa-solid fa-filter"></i>
-                </button>
+                </div>
                 <div class="mx-4 py-2 border-l-2 border-red-900"></div>
-                <div class="flex items-center justify-center text-white cursor-pointer" data-collapse-toggle="short">
+                <div class="flex items-center justify-center text-white hover:text-red-500 cursor-pointer" data-collapse-toggle="short">
                     <div class="mr-2">Short</div>
                     <i class="fa-solid fa-sort"></i>
                 </div>
@@ -127,19 +128,19 @@
         </div>
 
         {{-- filter --}}
-        <div class="hidden mt-4 bg-pink-300 rounded-lg p-4" id="filter">
+        <div class="hidden mt-4 bg-black/40 backdrop-blur-md border border-red-500 rounded-lg p-4" id="filter">
             <div class="flex justify-between">
-                <div class="text-xl font-bold">
+                <div class="text-xl text-white font-bold">
                     Filter By
                 </div>
 
-                <i class="fa-solid fa-x cursor-pointer" data-collapse-toggle="filter"></i>
+                <i class="fa-solid fa-x cursor-pointer text-white" data-collapse-toggle="filter"></i>
             </div>
             
             <div class="flex flex-wrap justify-start mt-4 gap-x-20 gap-y-4">
                 {{-- merk --}}
                 <div>
-                    <div class="text-lg">Brands</div>
+                    <div class="text-lg text-white">Brands</div>
     
                     <div class="flex gap-4 mt-2">
                         @foreach ($merks as $merk)
@@ -151,7 +152,7 @@
                                 {{-- before --}}
                                 <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                     <div class="flex items-center text-center justify-between p-2">
-                                        <span class="z-3 text-base pr-2">{{ $merk->name }}</span>
+                                        <span class="z-3 text-base text-white/70 pr-2">{{ $merk->name }}</span>
                                         <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                     </div>
                                 </div>
@@ -169,7 +170,7 @@
     
                 {{-- jenis --}}
                 <div>
-                    <div class="text-lg">
+                    <div class="text-lg text-white">
                         Category
                     </div>
     
@@ -183,7 +184,7 @@
                                 {{-- before --}}
                                 <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                     <div class="flex items-center text-center justify-between p-2">
-                                        <span class="z-3 text-base pr-2">{{ $jenis->name }}</span>
+                                        <span class="z-3 text-base text-white/70 pr-2">{{ $jenis->name }}</span>
                                         <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                     </div>
                                 </div>
@@ -201,7 +202,7 @@
     
                 {{-- kondisi --}}
                 <div>
-                    <div class="text-lg">
+                    <div class="text-lg text-white">
                         Condition
                     </div>
     
@@ -212,7 +213,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">New</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">New</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -231,7 +232,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Second</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Second</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -248,7 +249,7 @@
     
                 {{-- fuel type --}}
                 <div>
-                    <div class="text-lg">
+                    <div class="text-lg text-white">
                         Fuel Type
                     </div>
     
@@ -259,7 +260,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Bensin</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Bensin</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -278,7 +279,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Solar</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Solar</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -297,7 +298,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Listrik</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Listrik</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -316,7 +317,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Hybrid</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Hybrid</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -333,7 +334,7 @@
     
                 {{-- transmission --}}
                 <div>
-                    <div class="text-lg">
+                    <div class="text-lg text-white">
                         Transmission
                     </div>
     
@@ -344,7 +345,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Manual</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Manual</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -363,7 +364,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Automatic</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Automatic</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -382,7 +383,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Continuously Variable Transmission</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Continuously Variable Transmission</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -401,7 +402,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Dual-Clutch</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Dual-Clutch</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -420,7 +421,7 @@
                             {{-- before --}}
                             <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                                 <div class="flex items-center text-center justify-between p-2">
-                                    <span class="z-3 text-base pr-2">Semi Automatic</span>
+                                    <span class="z-3 text-base text-white/70 pr-2">Semi Automatic</span>
                                     <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                                 </div>
                             </div>
@@ -437,12 +438,12 @@
     
                 {{-- harga --}}
                 <div>
-                    <div class="text-lg">
+                    <div class="text-lg text-white">
                         Price
                     </div>
                     <form class="max-w-sm w-64 pt-2">
                         <select wire:model.live="selected_price" 
-                        class="rounded-[8px] block w-full p-2 border border-red-500 bg-transparent placeholder-gray-400 text-gray focus:border-red-500">
+                        class="rounded-[8px] block w-full p-2 border border-red-500 bg-black/50 placeholder-gray-400 text-white/70 focus:border-red-500">
                             <option selected>Price</option>
                             <option value="< Rp 150 Juta">< Rp 150 Juta</option>
                             <option value="Rp 150 Juta - Rp 300 Juta">Rp 150 Juta - Rp 300 Juta</option>
@@ -456,18 +457,18 @@
         </div>
 
         {{-- shorting --}}
-        <div class="hidden mt-4 bg-yellow-300 rounded-lg p-4 grid gap-4" id="short">
+        <div class="hidden mt-4 bg-black/40 backdrop-blur-md border border-red-500 rounded-lg p-4 grid gap-4" id="short">
             <div class="flex justify-between">
-                <div class="text-xl font-bold">
+                <div class="text-xl text-white font-bold">
                     Short By
                 </div>
 
-                <i class="fa-solid fa-x cursor-pointer" data-collapse-toggle="short"></i>
+                <i class="fa-solid fa-x cursor-pointer text-white" data-collapse-toggle="short"></i>
             </div>
 
             {{-- Price --}}
-            <div class="flex justify-between border-b pb-4">
-                <div class="text-lg">Price</div>
+            <div class="flex justify-between border-b border-red-500/50 pb-4">
+                <div class="text-lg text-white">Price</div>
 
                 <div class="grid gap-2">
                     {{-- low - hight --}}
@@ -476,7 +477,7 @@
                         {{-- before --}}
                         <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                             <div class="flex items-center text-center justify-between p-2">
-                                <span class="z-3 text-base pr-2">Low to High</span>
+                                <span class="z-3 text-base text-white/70 pr-2">Low to High</span>
                                 <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                             </div>
                         </div>
@@ -495,7 +496,7 @@
                         {{-- before --}}
                         <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                             <div class="flex items-center text-center justify-between p-2">
-                                <span class="z-3 text-base pr-2">Hight to Low</span>
+                                <span class="z-3 text-base text-white/70 pr-2">Hight to Low</span>
                                 <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                             </div>
                         </div>
@@ -511,8 +512,8 @@
             </div>
 
             {{-- Newest --}}
-            <div class="flex justify-between border-b pb-4">
-                <div class="text-lg">Newest</div>
+            <div class="flex justify-between border-b border-red-500/50 pb-4">
+                <div class="text-lg text-white">Newest</div>
 
                 {{-- newest --}}
                 <label class="cursor-pointer relative">
@@ -520,7 +521,7 @@
                     {{-- before --}}
                     <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                         <div class="flex items-center text-center justify-between p-2">
-                            <span class="z-3 text-base pr-2">Newest</span>
+                            <span class="z-3 text-base text-white/70 pr-2">Newest</span>
                             <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                         </div>
                     </div>
@@ -535,15 +536,15 @@
             </div>
 
             {{-- Best Selling --}}
-            <div class="flex justify-between border-b pb-4">
-                <div class="text-lg">Best Selling</div>
+            <div class="flex justify-between">
+                <div class="text-lg text-white">Best Selling</div>
 
                 <label class="cursor-pointer relative">
                     <input type="radio" wire:model.live="selected_sortBy" name="sortBy" value="Best Selling" class="peer sr-only" />
                     {{-- before --}}
                     <div class="overflow-hidden opacity-100 rounded-lg border border-red-500 peer-checked:opacity-0">
                         <div class="flex items-center text-center justify-between p-2">
-                            <span class="z-3 text-base pr-2">Best Selling</span>
+                            <span class="z-3 text-base text-white/70 pr-2">Best Selling</span>
                             <i class="fa-solid fa-check text-white-500 opacity-0"></i>
                         </div>
                     </div>
@@ -561,16 +562,17 @@
         {{-- product --}}
         <div class="flex flex-wrap justify-start mt-8 mx-8 gap-4"> 
             @foreach ($products as $index => $product)
-                <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm">
+                <div class="w-full max-w-sm bg-[#181818] rounded-[12px] shadow-sm">
 
                     {{-- label & image --}}
                     <div class="relative">
-                        <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded 
+                        <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded z-10 
                                 {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}">
                             {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                         </span>
-                        <div>
-                            <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                        <div class="overflow-hidden rounded-t-[12px]">
+                            <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
+                            src="{{ asset('storage/' . $product->image) }}" alt="product image" />
                         </div>
                     </div>    
                     

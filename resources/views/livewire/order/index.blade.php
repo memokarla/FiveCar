@@ -7,7 +7,7 @@
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             @if($orders->isNotEmpty())
             <table class="w-full text-sm text-left rtl:text-right text-gray-400">
-                <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                <thead class="text-xs uppercase bg-[#181818] text-white/70">
                     <tr>
                         <th scope="col" class="px-6 py-3">
                             Order ID
@@ -34,8 +34,8 @@
                 </thead>
                 <tbody>
                     @foreach  ($orders as $order)
-                        <tr class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
-                            <th class="px-6 py-4">
+                        <tr class="bg-[#222] hover:bg-[#181818]">
+                            <th class="px-6 py-4 text-white">
                                 {{ $order->code_order }}
                             </th>
                             <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
@@ -46,7 +46,7 @@
                                     No Products Found
                                 @endforelse 
                             </th>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-white">
                                 {{ $order->created_at->format('d F Y') }}
                             </td>
                             <td class="px-6 py-4">
@@ -93,7 +93,7 @@
                                         <label class="px-4 py-2 text-white bg-gray-600 rounded-lg">Unknown</label>
                                 @endswitch
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-white">
                                 {{ 'Rp ' . number_format($order->grand_total >= 1000000000 ? $order->grand_total / 1000000000 : $order->grand_total / 1000000, 2) }}
                                 {{ $order->grand_total >= 1000000000 ? ' M' : ' Jt' }}
                             </td>

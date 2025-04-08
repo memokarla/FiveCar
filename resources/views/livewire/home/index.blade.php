@@ -60,7 +60,7 @@
     </div>
 
     {{-- category --}}
-    <div class="flex mt-4 gap-4 w-screen bg-[#1E1E1E] p-4 items-center justify-center">
+    <div class="flex gap-8 bg-[#1E1E1E] mx-12 mt-8 p-4 rounded-lg items-center justify-center">
         <!-- Tombol Previous -->
         <button 
             class="px-2 py-1 bg-white/30 rounded-full text-black"
@@ -73,10 +73,10 @@
             class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
             style="-ms-overflow-style: none; scrollbar-width: none;">
             @foreach ($jenis as $category)
-                <div class="block max-w-sm shadow-sm rounded-[12px]">
+                <div class="block max-w-sm shadow-sm rounded-[12px] overflow-hidden">
                     <a href="/product?category[0]={{ $category->id }}" class="flex-none snap-center">
                         <img src="{{ asset('storage/' . $category->image) }}" 
-                            class="w-36 h-24 object-cover rounded-[12px] border-2 border-gray-500/50">
+                            class="w-36 h-24 object-cover rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105">
                     </a>
                     <p class="text-base text-center text-white">{{ $category->name }}</p>
                 </div>
@@ -92,7 +92,7 @@
     </div>
     
     {{-- merk --}}
-    <div class="flex mt-4 gap-4 w-screen bg-[#1E1E1E] p-4 items-center justify-center">
+    <div class="flex gap-8 bg-[#1E1E1E] mx-12 mt-4 p-4 rounded-lg items-center justify-center">
         <!-- Tombol Previous -->
         <button 
             class="px-2 py-1 bg-white/30 rounded-full text-black"
@@ -105,10 +105,10 @@
             class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
             style="-ms-overflow-style: none; scrollbar-width: none;">
             @foreach ($merks as $merk)
-                <div class="block max-w-sm shadow-sm rounded-[12px]">
+                <div class="block max-w-sm shadow-sm rounded-[12px] overflow-hidden">
                     <a href="/product?brand[0]={{ $merk->id }}" class="flex-none snap-center">
                         <img src="{{ asset('storage/' . $merk->image) }}" 
-                            class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50">
+                            class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105">
                     </a>
                     <p class="text-base text-center text-white">{{ $merk->name }}</p>
                 </div>
@@ -125,7 +125,7 @@
 
     {{-- produk terlaris --}}
     {{-- <div class="w-screen bg-gradient-to-b from-gray-900 to-red-800 mt-4"> --}}
-    <div class="w-screen bg-[#181818] mt-4">
+    <div class="mx-12 rounded-lg bg-[#181818] mt-8">
         {{-- tulisan --}}
         <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
             <div class="text-2xl font-medium">Best Selling Product</div>
@@ -136,7 +136,7 @@
         </div>
 
         {{-- card --}}
-        <div class="w-full overflow-x-auto p-4">
+        <div class="w-full overflow-x-auto p-4 pb-8">
             <div class="flex space-x-4 w-max gap-2 px-4"> 
                 @foreach ($products->take(8) as $index => $product)
                     {{-- <div class="w-full max-w-sm bg-gradient-to-b from-black to-gray-900 rounded-[12px] shadow-sm"> --}}
@@ -146,12 +146,13 @@
                         <div class="relative">
                             {{-- <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded 
                                   {{ $product->condition === 'baru' ? 'bg-green-600' : 'bg-yellow-500' }}"> --}}
-                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded 
+                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded z-10
                             {{ $product->condition === 'baru' ? 'bg-green-500/80' : 'bg-yellow-400/80' }}">                              
                                 {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                             </span>
-                            <div>
-                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            <div class="overflow-hidden rounded-t-[12px]">
+                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
+                                src="{{ asset('storage/' . $product->image) }}" alt="product image" />
                             </div>
                         </div>    
                         
@@ -198,7 +199,7 @@
     </div>
 
     {{-- new --}}
-    <div class="w-screen bg-[#181818] mt-4">
+    <div class="mx-12 rounded-lg bg-[#181818] mt-8">
         {{-- tulisan --}}
         <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
             <div class="text-2xl font-medium">Popular New Car</div>
@@ -209,19 +210,20 @@
         </div>
 
         {{-- card --}}
-        <div class="w-full overflow-x-auto p-4">
+        <div class="w-full overflow-x-auto p-4 pb-8">
             <div class="flex space-x-4 w-max gap-2 px-4"> 
                 @foreach ($products->filter(fn($product) => $product->condition === 'baru')->take(8) as $index => $product)
                 <div class="w-full max-w-sm bg-[#222] rounded-[12px] shadow-lg shadow-black/30">
 
                         {{-- label & image --}}
                         <div class="relative">
-                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded 
+                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded z-10
                             {{ $product->condition === 'baru' ? 'bg-green-500/80' : 'bg-yellow-400/80' }}">                              
                                 {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                             </span>
-                            <div>
-                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            <div class="overflow-hidden rounded-t-[12px]">
+                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
+                                src="{{ asset('storage/' . $product->image) }}" alt="product image" />
                             </div>
                         </div>    
                         
@@ -268,7 +270,7 @@
     </div>
 
     {{-- second --}}
-    <div class="w-screen bg-[#181818] mt-4">
+    <div class="mx-12 rounded-lg bg-[#181818] mt-8">
         {{-- tulisan --}}
         <div class="flex items-center justify-between px-8 pt-6 pb-4 top-0 z-10 text-white">
             <div class="text-2xl font-medium">Popular Second Car</div>
@@ -279,19 +281,20 @@
         </div>
 
         {{-- card --}}
-        <div class="w-full overflow-x-auto p-4">
+        <div class="w-full overflow-x-auto p-4 pb-8">
             <div class="flex space-x-4 w-max gap-2 px-4"> 
                 @foreach ($products->filter(fn($product) => $product->condition === 'bekas')->take(8) as $index => $product)
                 <div class="w-full max-w-sm bg-[#222] rounded-[12px] shadow-lg shadow-black/30">
 
                         {{-- label & image --}}
                         <div class="relative">
-                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded 
+                            <span class="absolute top-2 left-2 text-white text-xs font-bold px-2 py-1 rounded z-10
                             {{ $product->condition === 'baru' ? 'bg-green-500/80' : 'bg-yellow-400/80' }}">                              
                                 {{ $product->condition === 'baru' ? 'New' : 'Second' }}
                             </span>
-                            <div>
-                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover" src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            <div class="overflow-hidden rounded-t-[12px]">
+                                <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
+                                src="{{ asset('storage/' . $product->image) }}" alt="product image" />
                             </div>
                         </div>    
                         
