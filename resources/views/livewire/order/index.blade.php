@@ -109,21 +109,17 @@
                 </tbody>
             </table>
             @else
-            {{-- <button type="button" class="text-white bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 font-medium rounded-lg text-xs px-3.5 py-2.5 text-center">
-                <a href="{{ route('product') }}">
-                    No Orders Found
-                </a>
-            </button> --}}
-            <div class="text-center my-10">
-                <h2 class="text-xl font-semibold text-gray-700">You don’t have any orders yet</h2>
-                <p class="text-gray-500 mt-2">Start exploring and book your dream car now!</p>
-
-                <a href="{{ route('product') }}" 
-                class="mt-4 inline-block text-white px-6 py-2 rounded-lg bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700">
-                    No Orders Found
-                </a>
+            <div class="p-1 rounded-lg shadow-md bg-[#181818]">
+                <div class="text-center my-10">
+                    <h2 class="text-xl font-semibold text-white">You don’t have any orders yet</h2>
+                    <p class="text-white/50 mt-2">Start exploring and book your dream car now!</p>
+    
+                    <a href="{{ route('product') }}" 
+                    class="mt-4 inline-block text-white px-6 py-2 rounded-lg bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700">
+                        No Orders Found
+                    </a>
+                </div>
             </div>
-            
             @endif
         </div>
 

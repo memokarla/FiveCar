@@ -580,7 +580,7 @@
                     <div class="p-4">
                         {{-- mekr --}}
                         <div>
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                            <h5 class="text-xl font-semibold tracking-tight text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
                             <p class="text-white/60">{{ $product->jenis->name }}</p>
                         </div>
 

@@ -73,7 +73,8 @@
             class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
             style="-ms-overflow-style: none; scrollbar-width: none;">
             @foreach ($jenis as $category)
-                <div class="block max-w-sm shadow-sm rounded-[12px] overflow-hidden">
+                <!-- <div class="block max-w-sm shadow-sm rounded-[12px] overflow-hidden"> -->
+                <div class="flex-none w-36 snap-center text-center">
                     <a href="/product?category[0]={{ $category->id }}" class="flex-none snap-center">
                         <img src="{{ asset('storage/' . $category->image) }}" 
                             class="w-36 h-24 object-cover rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105">
@@ -92,7 +93,7 @@
     </div>
     
     {{-- merk --}}
-    <div class="flex gap-8 bg-[#1E1E1E] mx-12 mt-4 p-4 rounded-lg items-center justify-center">
+    <div class="flex gap-8 bg-[#1E1E1E] mx-12 mt-8 p-4 rounded-lg items-center justify-center">
         <!-- Tombol Previous -->
         <button 
             class="px-2 py-1 bg-white/30 rounded-full text-black"
@@ -105,7 +106,7 @@
             class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
             style="-ms-overflow-style: none; scrollbar-width: none;">
             @foreach ($merks as $merk)
-                <div class="block max-w-sm shadow-sm rounded-[12px] overflow-hidden">
+                <div class="flex-none w-24 snap-center text-center">
                     <a href="/product?brand[0]={{ $merk->id }}" class="flex-none snap-center">
                         <img src="{{ asset('storage/' . $merk->image) }}" 
                             class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105">
@@ -160,7 +161,7 @@
                         <div class="p-4">
                             {{-- merk --}}
                             <div>
-                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                                <h5 class="text-xl font-semibold tracking-tight text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
                                 <p class="text-white/60">{{ $product->jenis->name }}</p>
                             </div>
 
@@ -231,7 +232,7 @@
                         <div class="p-4">
                             {{-- merk --}}
                             <div>
-                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                                <h5 class="text-xl font-semibold tracking-tight text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
                                 <p class="text-white/60">{{ $product->jenis->name }}</p>
                             </div>
 
@@ -302,7 +303,7 @@
                         <div class="p-4">
                             {{-- merk --}}
                             <div>
-                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
+                                <h5 class="text-xl font-semibold tracking-tight text-white">{{ $product->merk->name }} {{ $product->name }}</h5>
                                 <p class="text-white/60">{{ $product->jenis->name }}</p>
                             </div>
 

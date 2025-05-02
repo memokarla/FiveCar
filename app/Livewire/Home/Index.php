@@ -37,9 +37,12 @@ class Index extends Component
             ->leftJoinSub(
                 OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
                     ->groupBy('product_id'),
-                'sales',
-                'products.id',
-                'sales.product_id'
+                'sales', // alias dari subquery. Subquery ini akan tampil seperti sebuah "tabel sementara" bernama sales.
+                'products.id', // Ini adalah kolom dari tabel utama (products) yang akan dicocokkan.
+                'sales.product_id' // Ini adalah kolom dari subquery sales yang akan dicocokkan dengan products.id.
+
+                // ngapa perlu sales? ini wajib karena kita menggunakan leftJoinSub
+                // alias [sales] pada subquery itu wajib saat menggunakan leftJoinSub()Alias sales pada subquery itu wajib saat menggunakan leftJoinSub()
             )
             ->orderByDesc('total_sold') // Produk dengan jumlah penjualan terbanyak muncul duluan
             ->select('products.*', DB::raw('COALESCE(total_sold, 0) as total_sold')) // Jika belum ada penjualan, anggap 0
