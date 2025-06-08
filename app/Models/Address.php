@@ -9,7 +9,15 @@ class Address extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'phone', 'street_address', 'city', 'state', 'zip_code', 'order_id']; 
+    protected $fillable = [
+        'name', 
+        'phone', 
+        'street_address', 
+        'city', 
+        'state', 
+        'zip_code', 
+        'order_id'
+    ]; 
 
     // Relasi ke Order
     public function order()
