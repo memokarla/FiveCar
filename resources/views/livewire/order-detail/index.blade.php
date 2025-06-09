@@ -112,7 +112,7 @@
 
                     <div class="flex pt-4 gap-4">
                         <div>
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-24 md:h-32 lg:h-32 rounded-lg shadow-[2px_2px_4px_rgba(0,0,0,0.5)]" />
+                            <img src="{{ Str::startsWith($product->image, 'images/') ? asset($product->image) : asset('storage/' . $product->image) }}"  alt="{{ $product->name }}" class="w-full h-24 md:h-32 lg:h-32 rounded-lg shadow-[2px_2px_4px_rgba(0,0,0,0.5)]" />
                         </div>
                         
                         <div>

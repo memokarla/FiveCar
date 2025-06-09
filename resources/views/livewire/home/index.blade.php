@@ -7,17 +7,9 @@
         <!-- Carousel wrapper -->
         <div class="relative h-screen overflow-hidden"> 
             @foreach ($headers as $index => $header)
-                {{-- $headers adalah kumpulan data (misalnya dari database). 
-                $index adalah angka indeks dari setiap item dalam loop, dimulai dari 0.
-                $header mewakili satu baris data dari $headers pada setiap iterasi. --}}
-                
-                <div>
-                    <div duration-700 ease-in-out data-carousel-item>
-                        <img src="{{ asset('storage/' . $header->image) }}"
-                            {{-- asset('storage/...') -> Mengambil URL dari file yang ada di storage/app/public/
-                            $header->image -> Nama file gambar yang diambil dari database. --}}
-                            class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                    </div>
+                <div class="duration-700 ease-in-out {{ $index === 0 ? '' : 'hidden' }}" data-carousel-item="{{ $index === 0 ? 'active' : '' }}">
+                    <img src="{{ Str::startsWith($header->image, 'images/') ? asset($header->image) : asset('storage/' . $header->image) }}"
+                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
                 </div>
             @endforeach
         </div>
@@ -76,8 +68,9 @@
                 <!-- <div class="block max-w-sm shadow-sm rounded-[12px] overflow-hidden"> -->
                 <div class="flex-none w-36 snap-center text-center">
                     <a href="/product?category[0]={{ $category->id }}" class="flex-none snap-center">
-                        <img src="{{ asset('storage/' . $category->image) }}" 
-                            class="w-36 h-24 object-cover rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                        <!-- <img src="{{ asset('storage/' . $category->image) }}"  -->
+                        <img src="{{ Str::startsWith($category->image, 'images/') ? asset($category->image) : asset('storage/' . $category->image) }}" 
+                            class="w-auto h-20 object-contain rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105 bg-white">
                     </a>
                     <p class="text-base text-center text-white">{{ $category->name }}</p>
                 </div>
@@ -106,10 +99,11 @@
             class="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide"
             style="-ms-overflow-style: none; scrollbar-width: none;">
             @foreach ($merks as $merk)
-                <div class="flex-none w-24 snap-center text-center">
+                <div class="flex-none w-36 snap-center text-center">
                     <a href="/product?brand[0]={{ $merk->id }}" class="flex-none snap-center">
-                        <img src="{{ asset('storage/' . $merk->image) }}" 
-                            class="w-24 h-24 object-cover rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                        <!-- <img src="{{ asset('storage/' . $merk->image) }}"  -->
+                        <img src="{{ Str::startsWith($merk->image, 'images/') ? asset($merk->image) : asset('storage/' . $merk->image) }}" 
+                            class="w-36 h-24 object-contain rounded-[12px] border-2 border-gray-500/50 transition-transform duration-300 ease-in-out transform hover:scale-105 bg-white">
                     </a>
                     <p class="text-base text-center text-white">{{ $merk->name }}</p>
                 </div>
@@ -153,7 +147,8 @@
                             </span>
                             <div class="overflow-hidden rounded-t-[12px]">
                                 <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
-                                src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                                src="{{ Str::startsWith($product->image, 'images/') ? asset($product->image) : asset('storage/' . $product->image) }}" 
+                                alt="product image" />
                             </div>
                         </div>    
                         
@@ -224,7 +219,8 @@
                             </span>
                             <div class="overflow-hidden rounded-t-[12px]">
                                 <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
-                                src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                                src="{{ Str::startsWith($product->image, 'images/') ? asset($product->image) : asset('storage/' . $product->image) }}" 
+                                alt="product image" />
                             </div>
                         </div>    
                         
@@ -295,7 +291,8 @@
                             </span>
                             <div class="overflow-hidden rounded-t-[12px]">
                                 <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
-                                src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                                src="{{ Str::startsWith($product->image, 'images/') ? asset($product->image) : asset('storage/' . $product->image) }}" 
+                                alt="product image" />
                             </div>
                         </div>    
                         

@@ -5,7 +5,7 @@
     <div class="mt-32 mx-20 flex-col md:flex-row flex gap-4 justify-center">
         {{-- gambar --}}
         <div class="md:w-3/5 w-full rounded-lg shadow-lg">
-            <img class="w-full h-auto rounded-lg" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" />   
+            <img class="w-full h-auto rounded-lg" src="{{ Str::startsWith($product->image, 'images/') ? asset($product->image) : asset('storage/' . $product->image) }}"  alt="{{ $product->name }}" />   
         </div>
    
         {{-- info produk --}}

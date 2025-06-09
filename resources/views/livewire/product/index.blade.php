@@ -572,7 +572,7 @@
                         </span>
                         <div class="overflow-hidden rounded-t-[12px]">
                             <img class="rounded-t-[12px] p-1 w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105" 
-                            src="{{ asset('storage/' . $product->image) }}" alt="product image" />
+                            src="{{ Str::startsWith($product->image, 'images/') ? asset($product->image) : asset('storage/' . $product->image) }}"  alt="product image" />
                         </div>
                     </div>    
                     
