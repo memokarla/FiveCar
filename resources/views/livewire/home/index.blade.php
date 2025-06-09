@@ -7,9 +7,9 @@
         <!-- Carousel wrapper -->
         <div class="relative h-screen overflow-hidden"> 
             @foreach ($headers as $index => $header)
-                <div class="duration-700 ease-in-out {{ $index === 0 ? '' : 'hidden' }}" data-carousel-item="{{ $index === 0 ? 'active' : '' }}">
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
                     <img src="{{ Str::startsWith($header->image, 'images/') ? asset($header->image) : asset('storage/' . $header->image) }}"
-                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                        class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
                 </div>
             @endforeach
         </div>
@@ -340,6 +340,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.5.3/flowbite.min.js"></script>
+    <script src="https://unpkg.com/flowbite@latest/dist/flowbite.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </div>

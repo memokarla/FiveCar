@@ -142,7 +142,7 @@
                 <div>
                     <div class="text-lg text-white">Brands</div>
     
-                    <div class="flex gap-4 mt-2">
+                    <div class="flex flex-wrap gap-4 mt-2">
                         @foreach ($merks as $merk)
                             <label for="{{ $merk->slug }}" class="cursor-pointer relative">
                                 <input type="checkbox" wire:model.live="selected_merks" 
@@ -174,7 +174,7 @@
                         Category
                     </div>
     
-                    <div class="flex gap-4 mt-2">
+                    <div class="flex flex-wrap gap-4 mt-2">
                         @foreach ($jenis as $jenis)
                             <label for="{{ $jenis->slug }}" class="cursor-pointer relative">
                                 <input type="checkbox" wire:model.live="selected_jenis" 
