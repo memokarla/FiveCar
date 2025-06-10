@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class HeaderResource extends Resource
 {
@@ -92,7 +93,18 @@ class HeaderResource extends Resource
                     ->search($record->id) + 1), 
                     
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Header Image'),
+                    ->label('Header Image')
+                    ->getStateUsing(function ($record) {
+                        $image = $record->image;
+
+                        // Jika path-nya diawali 'images/' → artinya file di 'public/images'
+                        if (Str::startsWith($image, 'images/')) {
+                            return asset($image); // public/images/xxx
+                        }
+
+                        // Selain itu, anggap file tersimpan di storage/app/public/headers
+                        return asset('storage/' . $image);
+                    }),
 
                 Tables\Columns\TextColumn::make('text')
                     ->label('Text Header')

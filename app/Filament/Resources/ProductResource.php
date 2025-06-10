@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
  
 
 class ProductResource extends Resource
@@ -215,7 +216,18 @@ class ProductResource extends Resource
                 
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Image')
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        $image = $record->image;
+
+                        // Jika path-nya diawali 'images/' → artinya file di 'public/images'
+                        if (Str::startsWith($image, 'images/')) {
+                            return asset($image); // public/images/xxx
+                        }
+
+                        // Selain itu, anggap file tersimpan di storage/app/public/headers
+                        return asset('storage/' . $image);
+                    }),
                 
                 Tables\Columns\TextColumn::make('car_info') // membuat kolom baru dalam tabel Filament dengan nama "car_info"
                     ->label('Car')
