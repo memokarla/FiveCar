@@ -60,12 +60,14 @@ class JenisResource extends Resource
                                 // set inilah yang menjadi acuan nilai pada $state hendak diapakan
                                 // \Illuminate\Support\Str::slug($state) -> Mengubah nilai name menjadi slug
                             })
+                            ->live(true) // live validation agar slug langsung berubah saat mengetik
                             ->required(),
 
                         // slug
                         Forms\Components\TextInput::make('slug')
                             ->label('Slug')
                             ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
+                            ->dehydrated()
                             ->required(),
                         
                     ])
