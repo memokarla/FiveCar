@@ -23,10 +23,14 @@ class RoleSeeder extends Seeder
             app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
             // Create roles
-            $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
+            $this->command->info('Generating permissions...');
+            \Artisan::call('shield:generate', ['--all' => 'admin']);
+            $this->command->info('Permissions generated successfully.');
+
+            $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
             $permissions = Permission::all();
             $superAdminRole->syncPermissions($permissions);
-            
+
             // Create initial Super Admin user if doesn't exist
             $superAdmin = User::firstOrCreate(
                 ['email' => 'fivecar@pkk5.com'],
@@ -36,10 +40,10 @@ class RoleSeeder extends Seeder
                     'email_verified_at' => now(),
                 ]
             );
-            
+
             // Assign role to user
             $superAdmin->assignRole($superAdminRole);
-            
+
             $this->command->info('Roles and permissions seeded successfully!');
         } catch (Exception $e) {
             $this->command->error('Error seeding roles and permissions: ' . $e->getMessage());
