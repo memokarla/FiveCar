@@ -12,12 +12,25 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class HeaderResource extends Resource
 {
     protected static ?string $model = Header::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
+
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Slider'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 1; // semakin kecil, semakin prioritas
+    }
 
     public static function form(Form $form): Form
     {
@@ -80,7 +93,18 @@ class HeaderResource extends Resource
                     ->search($record->id) + 1), 
                     
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Header Image'),
+                    ->label('Header Image')
+                    ->getStateUsing(function ($record) {
+                        $image = $record->image;
+
+                        // Jika path-nya diawali 'images/' → artinya file di 'public/images'
+                        if (Str::startsWith($image, 'images/')) {
+                            return asset($image); // public/images/xxx
+                        }
+
+                        // Selain itu, anggap file tersimpan di storage/app/public/headers
+                        return asset('storage/' . $image);
+                    }),
 
                 Tables\Columns\TextColumn::make('text')
                     ->label('Text Header')
@@ -106,7 +130,7 @@ class HeaderResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
-                    ->label('Status'), 
+                    ->label('Is Active'), 
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
@@ -114,12 +138,14 @@ class HeaderResource extends Resource
                     ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
     }
 

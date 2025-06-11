@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('image');
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 15, 2);
             $table->string('location');
             $table->json('description');
             $table->enum('condition', ['baru', 'bekas']);
-            $table->foreignId('jenis_id')->constrained('jenis')->onDelete('cascade');
-            $table->foreignId('merks_id')->constrained('merks')->onDelete('cascade');
+            $table->boolean('is_active')->default(true);
+            $table->foreignId('jenis_id')->constrained('jenis')->onDelete('restrict');
+            $table->foreignId('merks_id')->constrained('merks')->onDelete('restrict');
             $table->timestamps();
         });
     }

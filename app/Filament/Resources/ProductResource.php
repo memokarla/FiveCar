@@ -15,13 +15,20 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
  
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 4; 
+    }
 
     public static function form(Form $form): Form
     {
@@ -46,6 +53,9 @@ class ProductResource extends Resource
                             ->relationship('merk', 'name') // mengambil field name dari tabel merk (jadi dropdownnya akan menampilkan field name)
                                                            // dengan ini, model utama (product) harus memiliki relasi belongsTo ke model Merk
                             ->native(false) // menonaktifkan tampilan dropdown bawaan browser, menggantinya dengan dropdown yang lebih interaktif dari Filament
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
                             ->required(),
 
                         // milih jenis
@@ -53,24 +63,37 @@ class ProductResource extends Resource
                             ->label('Car Categories')
                             ->relationship('jenis', 'name')
                             ->native(false)
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+                            
+                        // name
+                        Forms\Components\TextInput::make('name')
+                            ->label('Car Variant / Series') 
+                            ->placeholder('Varian or Series') 
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+
+                        // slug
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                     ]),
-
-                    // name
-                    Forms\Components\TextInput::make('name')
-                        ->label('Car Variant / Series') 
-                        ->placeholder('Varian or Series') 
-                        ->required(),
-                    
-                    // price
+                
+                    //  price
                     Forms\Components\TextInput::make('price')
-                        ->label('Price (Million)')
+                        ->label('Price (Million/Billion)')
                         ->numeric() // Hanya menerima angka
                         ->prefix('Rp ') // Menambahkan "Rp " di depan input
-                        ->extraInputAttributes(['style' => 'text-align: left']) // Teks rata kiri
+                        ->placeholder('Example: 1000000 for 1 Jt') // Memberi petunjuk input
                         ->suffix('.00') // Menambahkan ".00" di akhir input
                         ->required(),
-
+                
                     // location
                     Forms\Components\TextInput::make('location')
                         ->label('Location') 
@@ -88,18 +111,41 @@ class ProductResource extends Resource
                         ->required(),
 
                     // description
-                    Forms\Components\Section::make('description') // membuat section description yang berisi beberapa input 
+                    Forms\Components\Section::make('Description') // membuat section description yang berisi beberapa input 
                     ->schema([
                         Forms\Components\Grid::make(2) // membuat 2 kolom dalam satu baris
                             ->schema([
+                                Forms\Components\TextInput::make('description.top_speed')
+                                    ->label('Top Speed')
+                                    ->suffix('km/h')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->required(),
                                 Forms\Components\TextInput::make('description.engine')
                                     ->label('Engine')
                                     ->required(),
-                                Forms\Components\TextInput::make('description.transmission')
-                                    ->label('Transmission') 
-                                    ->required(),
                                 Forms\Components\TextInput::make('description.power')
                                     ->label('Power')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\Select::make('description.power_unit')
+                                    ->options([
+                                        'hp' => 'HP',
+                                        'kw' => 'kW',
+                                    ])
+                                    ->default('hp')
+                                    ->native(false)
+                                    ->required(),
+                                Forms\Components\Select::make('description.transmission')
+                                    ->label('Transmission') 
+                                    ->options([
+                                        'manual' => 'Manual',
+                                        'automatic' => 'Automatic',
+                                        'cvt' => 'Continuously Variable Transmission',
+                                        'dct' => 'Dual-Clutch',
+                                        'semi-automatic' => 'Semi Automatic',
+                                    ])
+                                    ->native(false)
                                     ->required(),
                                 Forms\Components\Select::make('description.fuel_type') // dropdown untuk memilih jenis bahan bakar
                                     ->label('Fuel Type')
@@ -113,25 +159,39 @@ class ProductResource extends Resource
                                     ->required(),
                                 Forms\Components\TextInput::make('description.fuel_consumption')
                                     ->label('Fuel Consumption')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('L/100km')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.seat_capacity')
                                     ->label('Seat Capacity')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('seats')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.width')
                                     ->label('Width')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.length')
                                     ->label('Length')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.height')
                                     ->label('Height')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                                 Forms\Components\TextInput::make('description.ground_clearance')
                                     ->label('Ground Clearance')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->suffix('mm')
                                     ->required(),
                             ]),
                         ])
@@ -156,7 +216,18 @@ class ProductResource extends Resource
                 
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Image')
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        $image = $record->image;
+
+                        // Jika path-nya diawali 'images/' → artinya file di 'public/images'
+                        if (Str::startsWith($image, 'images/')) {
+                            return asset($image); // public/images/xxx
+                        }
+
+                        // Selain itu, anggap file tersimpan di storage/app/public/headers
+                        return asset('storage/' . $image);
+                    }),
                 
                 Tables\Columns\TextColumn::make('car_info') // membuat kolom baru dalam tabel Filament dengan nama "car_info"
                     ->label('Car')
@@ -164,9 +235,18 @@ class ProductResource extends Resource
                                     // untuk menampilkan data yang tidak ada di database secara langsung, tetapi berasal dari relasi
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Car Price')
+                    ->formatStateUsing(fn ($state) =>  // state itu nilanya ya
+                        $state >= 1000000000  // nah, ini seperti "Jika nilai lebih atau sama dengan 1.000.000.000", maka
+                            ? 'Rp ' . number_format($state / 1000000000, 2) . ' M' // jika harga ≥ 1 miliar (1.000.000.000), maka tampilkan dalam satuan miliar (M)
+                            : 'Rp ' . number_format($state / 1000000, 2) . ' Jt' // jika < 1 miliar, maka tampilkan dalam satuan juta (Jt)
+                    )
                     ->searchable(),
+                
 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
@@ -175,19 +255,50 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('condition')
                     ->label('Condition')
                     ->searchable(),
+
+                Tables\Columns\ToggleColumn::make('is_active') // Menampilkan toggle switch di tabel
+                    ->label('Is Active'), 
                     
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active') // Menyaring carousel berdasarkan status:
+                    ->trueLabel('Aktif') // Menampilkan hanya yang aktif
+                    ->falseLabel('Nonaktif'), // Menampilkan hanya yang tidak aktif
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteProduct($record)), 
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
+    }
+
+    protected static function deleteProduct($record) 
+    {
+        if ($record->orderItems()->exists()) {
+            \Filament\Notifications\Notification::make() 
+                ->title('Gagal menghapus!')
+                ->body('Produk ini masih digunakan dalam order item. Hapus order item terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('Produk dihapus!')
+            ->body('Produk berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     public static function getRelations(): array

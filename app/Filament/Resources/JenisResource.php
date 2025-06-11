@@ -12,12 +12,25 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class JenisResource extends Resource
 {
     protected static ?string $model = Jenis::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Category'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 2; 
+    }
 
     public static function form(Form $form): Form
     {
@@ -33,11 +46,27 @@ class JenisResource extends Resource
                             ->image() 
                             ->directory('jenis_image') // Folder penyimpanan di storage/app/public/[jenis_image]
                             ->required(), // Wajib
-
+                            
                         // name
                         Forms\Components\TextInput::make('name')
                             ->label('Car Categories') // Tulisan ini ada di atas form
                             ->placeholder('Categories') // Tulisan ini ada di dalam form
+                            ->reactive() // merespons perubahan pada field lain secara otomatis
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                            // afterStateUpdated -> callback yang dijalankan setelah nilai state pada field diperbarui oleh pengguna
+                            // function (callable $set, $state) 
+                            // -> $set (setter): mengubah atau mengisi field lain (dala konteks ini adalah 'slug') dalam form berdasarkan input name (ini tegantung $set yang diatur) 
+                            // -> $state: nilai terkini dari input field (misal aku isi field name dengan "Sedan", maka maka $state akan berisi "Sedan")
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                                // set inilah yang menjadi acuan nilai pada $state hendak diapakan
+                                // \Illuminate\Support\Str::slug($state) -> Mengubah nilai name menjadi slug
+                            })
+                            ->required(),
+
+                        // slug
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                         
                     ])
@@ -54,23 +83,62 @@ class JenisResource extends Resource
                     ->search($record->id) + 1), 
 
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Image'),
+                    ->label('Image')
+                    ->getStateUsing(function ($record) {
+                        $image = $record->image;
+
+                        // Jika path-nya diawali 'images/' → artinya file di 'public/images'
+                        if (Str::startsWith($image, 'images/')) {
+                            return asset($image); // public/images/xxx
+                        }
+
+                        // Selain itu, anggap file tersimpan di storage/app/public/headers
+                        return asset('storage/' . $image);
+                    }),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Car Category')
                     ->searchable(), // bisa di search oleh filamentnya
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteJenis($record)), 
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
+    }
+
+    protected static function deleteJenis($record) 
+    {
+        if ($record->products()->exists()) {
+            \Filament\Notifications\Notification::make() 
+                ->title('Gagal menghapus!')
+                ->body('Jenis ini masih digunakan dalam produk. Hapus produk terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('Jenis dihapus!')
+            ->body('Jenis berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     public static function getRelations(): array

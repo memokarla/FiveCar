@@ -12,12 +12,25 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class MerkResource extends Resource
 {
     protected static ?string $model = Merk::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    // mengganti nama 
+    public static function getNavigationLabel(): string
+    {
+        return 'Brand'; 
+    }
+
+    // mengatur urutannya
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
 
     public static function form(Form $form): Form
     {
@@ -38,6 +51,16 @@ class MerkResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Car Brand') // Tulisan ini ada di atas form
                             ->placeholder('Brand') // Tulisan ini ada di dalam form
+                            ->reactive() // merespons perubahan pada field lain secara otomatis
+                            ->afterStateUpdated(function (callable $set, $state) {  
+                                $set('slug', \Illuminate\Support\Str::slug($state));
+                            })
+                            ->required(),
+
+                        // slug
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
                             ->required(),
                         
                     ])
@@ -54,23 +77,66 @@ class MerkResource extends Resource
                     ->search($record->id) + 1), 
 
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Image'),
+                    ->label('Image')
+                    ->getStateUsing(function ($record) {
+                        $image = $record->image;
+
+                        // Jika path-nya diawali 'images/' → artinya file di 'public/images'
+                        if (Str::startsWith($image, 'images/')) {
+                            return asset($image); // public/images/xxx
+                        }
+
+                        // Selain itu, anggap file tersimpan di storage/app/public/headers
+                        return asset('storage/' . $image);
+                    }),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Car Brand')
                     ->searchable(), // bisa di search oleh filamentnya
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(fn ($record) => static::deleteMerk($record)), // Ketika tombol hapus diklik dan dikonfirmasi, fungsi deleteMerk($record) akan dijalankan
+                    Tables\Actions\ViewAction::make(),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ]);
+    }
+
+    protected static function deleteMerk($record) // fungsi inilah yang dijalankan ketika tombol hapus diklik
+    {
+        if ($record->products()->exists()) { // memeriksa apakah merk ini masih digunakan dalam produk sebelum dihapus
+        // $record->products() → Mengambil relasi produk yang terkait dengan merk tersebut (berdasarkan hasMany di model Merk).
+        // ->exists() → Mengecek apakah ada produk yang masih menggunakan merk ini.
+        // Jika ada produk yang menggunakan merk ini, penghapusan dibatalkan, dan muncul notifikasi error. 
+            \Filament\Notifications\Notification::make() // membuatkan notifikasi
+                ->title('Gagal menghapus!')
+                ->body('Merk ini masih digunakan dalam produk. Hapus produk terkait terlebih dahulu.')
+                ->danger() // merah
+                ->send();
+            
+            return;
+        }
+
+        // Jika merk tidak digunakan dalam produk, maka data akan dihapus
+        $record->delete();
+
+        \Filament\Notifications\Notification::make()
+            ->title('Merk dihapus!')
+            ->body('Merk berhasil dihapus.')
+            ->success() // hijau
+            ->send();
     }
 
     public static function getRelations(): array
