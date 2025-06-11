@@ -56,6 +56,7 @@ class ProductResource extends Resource
                             ->afterStateUpdated(function (callable $set, $state) {  
                                 $set('slug', \Illuminate\Support\Str::slug($state));
                             })
+                            ->live(true) // live validation agar slug langsung berubah saat mengetik
                             ->required(),
 
                         // milih jenis
@@ -66,6 +67,7 @@ class ProductResource extends Resource
                             ->afterStateUpdated(function (callable $set, $state) {  
                                 $set('slug', \Illuminate\Support\Str::slug($state));
                             })
+                            ->live(true) // live validation agar slug langsung berubah saat mengetik
                             ->required(),
                             
                         // name
@@ -76,12 +78,14 @@ class ProductResource extends Resource
                             ->afterStateUpdated(function (callable $set, $state) {  
                                 $set('slug', \Illuminate\Support\Str::slug($state));
                             })
+                            ->live(true) // live validation agar slug langsung berubah saat mengetik
                             ->required(),
 
                         // slug
                         Forms\Components\TextInput::make('slug')
                             ->label('Slug')
                             ->disabled() // Nonaktifkan jika ingin slug hanya untuk tampil dan tidak diubah manual
+                            ->dehydrated()
                             ->required(),
                     ]),
                 
